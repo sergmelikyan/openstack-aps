@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>
+            require([
+                "aps/load",
+                "aps/Output",
+                "aps/Memory",
+                "dojox/mvc/at",
+                "aps/Switch",
+                "aps/ready!",
+                "aps/Button"
+            ], function (load, Output, Memory, at, Switch, ready, Button) {
+                "use strict";
+                function rnd(max) {
+                    max = max || 10;
+                    return Math.round(Math.random() * max);
+                }
+                var data = {
+                    aps: {
+                        id: 1
+                    },
+                    info: {
+                        name: "Data Center " + 1,
+                        n_organizations: rnd(),
+                        n_head_templates: rnd(),
+                        n_images: rnd(),
+                        n_ippools: rnd()
+                    }
+                };
+                var view = ["aps/PageContainer", [
+                        ["<h2>", {
+                                innerHTML: data.info.name
+                            }],
+                        ["aps/Toolbar", [
+                                ["aps/ToolbarButton", {
+                                        label: _("Settings"),
+                                        disabled: true,
+                                    }],
+                                ["aps/ToolbarButton", {
+                                        label: _("Ippools"),
+                                        onClick: function () {
+                                            aps.apsc.gotoView('ippool');
+                                        }
+                                    }],
+                                ["aps/ToolbarButton", {
+                                        label: _("ISO"),
+                                        onClick: function () {
+                                            aps.apsc.gotoView('iso');
+                                        }
+                                    }],
+                                ["aps/ToolbarButton", {
+                                        label: _("Profile"),
+                                        onClick: function () {
+                                            aps.apsc.gotoView('profiles');
+                                        }
+                                    }]
+                            ]],
+                        ["aps/Container", [
+                                ["aps/FieldSet", {
+                                        title: _("Data Center Settings")
+                                    }, [
+                                        ["aps/TextBox", {
+                                                label: "DC Name"
+                                            }]
+                                    ]],
+                                ["aps/FieldSet", {
+                                        title: _("API Connection Settings")
+                                    }, [
+//                                ["aps/TextBox", {
+//                                        label: "DC URL"
+//                                    }],
+                                        ["aps/TextBox", {
+                                                label: _("URL"),
+                                                hint: _("URL of the Data Center")
+                                            }],
+                                        ["aps/TextBox", {
+                                                label: _("User"),
+                                                hint: _("User of the Data Center")
+                                            }],
+                                        ["aps/TextBox", {
+                                                label: _("Password"),
+                                                hint: _("Password of the Data Center")
+                                            }],
+                                        ["aps/TextBox", {
+                                                label: _("Proxy")
+                                            }]
+                                    ]
+                                ],
+                                ["aps/Button", {
+                                        title: _("Test Connection"),
+                                        onClick: function () {
+                                            alert("Connection cannot be stablished!");
+                                            this.cancel();
+                                        }
+                                    }],
+                                ["aps/Output", {innerHTML: "<br />"}],
+                                ["aps/Output", {innerHTML: "<br />"}],
+                                ["aps/Button", {
+                                        label: "Save",
+                                        onClick: function () {
+                                            aps.apsc.gotoView('datacenters');
+                                        }
+                                    }],
+                                ["aps/Button", {
+                                        label: "Cancel",
+                                        onClick: function () {
+                                            aps.apsc.gotoView('datacenters');
+                                        }
+                                    }]
+                            ]]
+                    ]];
+                load(view);
+            });
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

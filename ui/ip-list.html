@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                "aps/load",
+                "aps/Output",
+                "aps/Container",
+                "aps/Memory",
+                "dojox/mvc/at",
+                "aps/Switch",
+                "aps/ready!",
+                "aps/Button"
+            ], function (load, Output, Container, Memory, at, Switch, ready, Button) {
+                "use strict";
+
+                function rnd(max) {
+                    max = max || 10;
+                    return Math.round(Math.random() * max);
+                }
+
+                var dataips = [];
+                var range = rnd(5) + 1;
+                for (var i = 0; i < range; i++) {
+                    dataips.push({
+                        aps: {
+                            id: i
+                        },
+                        ip: "214.51.72." + i,
+                        gateway: "214.51.73.1"
+                    });
+                }
+
+                var data_center = new Memory({
+                    data: dataips,
+                    id_data_center: "aps.id"
+                });
+
+                var data = {
+                    aps: {
+                        id: 1
+                    },
+                    info: {
+                        name: "Data Center " + 1,
+                        n_organizations: rnd(),
+                        n_head_templates: rnd(),
+                        n_images: rnd(),
+                        n_ippools: rnd()
+                    }
+                };
+                var view = ["aps/PageContainer", [
+                        ["<h2>", {
+                                innerHTML: data.info.name
+                            }],
+                        ["aps/Toolbar", [
+                                ["aps/ToolbarButton", {
+                                        label: _("Settings"),
+                                        onClick: function () {
+                                            aps.apsc.gotoView('datacenter-settings');
+                                        }
+                                    }],
+                                ["aps/ToolbarButton", {
+                                        label: _("Ippools"),
+                                        disabled: true,
+                                    }],
+                                ["aps/ToolbarButton", {
+                                        label: _("ISO"),
+                                        onClick: function () {
+                                            aps.apsc.gotoView('iso');
+                                        }
+                                    }],
+                                ["aps/ToolbarButton", {
+                                        label: _("Profile"),
+                                        onClick: function () {
+                                            aps.apsc.gotoView('profiles');
+                                        }
+                                    }]
+                            ]],
+                        ["aps/Container", {
+                                title: "IP List"
+                            }, [["aps/Grid", {
+                                        store: data_center,
+                                        id: "gridId",
+                                        columns: [
+                                            {name: "IP", field: "ip"},
+                                            {name: "Gateway", field: "gateway"},
+                                            {name: "Actions", renderCell: function (row, data) {
+                                                    var container = new Container();
+                                                    container.addChild(new Button({
+                                                        label: 'Activate',
+                                                        onClick: function () {
+                                                            this.cancel();
+                                                        }
+                                                    }));
+                                                    container.addChild(new Button({
+                                                        label: 'Disable',
+                                                        onClick: function () {
+                                                            this.cancel();
+                                                        }
+                                                    }));
+                                                    container.addChild(new Button({
+                                                        label: 'Edit',
+                                                        onClick: function () {
+                                                            this.cancel();
+                                                        }
+                                                    }));
+                                                    return container;
+                                                }
+                                            }
+                                        ]
+                                    }],
+                                ["aps/Button", {
+                                        label: _("Return"),
+                                        onClick: function () {
+                                            aps.apsc.gotoView("ippool");
+                                        }
+                                    }]
+                            ]
+                        ]
+                    ]];
+                load(view);
+            });</script>
+    </head>
+    <body>
+    </body>
+</html>

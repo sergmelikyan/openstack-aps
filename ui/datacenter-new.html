@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                "aps/load",
+                "aps/Output",
+                "aps/Memory",
+                "dojox/mvc/at",
+                "aps/Switch",
+                "aps/ready!",
+                "aps/Button",
+                "aps/CheckBox",
+                "dojox/mvc/getStateful",
+                "dojox/mvc/getPlainValue",
+                "mamasu/mamadojo.js"
+            ], function (load, Output, Memory, at, Switch, ready, Button, CheckBox, getStateful, getPlainValue, mdojo) {
+                "use strict";
+                var object = getStateful({
+                    aps: {
+                        type: mdojo.Types.dc
+                    },
+                    name: "",
+                    apiurl: "",
+                    user: "",
+                    password: ""
+                });
+                load(["aps/PageContainer", {id: "main_page"}, [
+                        ["aps/FieldSet", {
+                                title: _("Data Center Settings")
+                            }, [
+                                ["aps/TextBox", {
+                                        label: "DC Name",
+                                        value: at(object, 'name')
+                                    }]
+                            ]],
+                        ["aps/FieldSet", {
+                                title: _("API Connection Settings")
+                            }, [
+                                ["aps/TextBox", {
+                                        label: _("URL"),
+                                        hint: _("URL of the Data Center"),
+                                        value: at(object, 'apiurl')
+                                    }],
+                                ["aps/TextBox", {
+                                        label: _("User"),
+                                        hint: _("User of the Data Center"),
+                                        value: at(object, 'user')
+                                    }],
+                                ["aps/Password", {
+                                        label: _("Password"),
+                                        hint: _("Password of the Data Center"),
+                                        value: at(object, 'password'),
+                                        showResetButton: false,
+                                        showStrengthIndicator: false,
+                                        showShowPasswordButton: false
+                                    }],
+                                ["aps/TextBox", {
+                                        label: _("Proxy")
+                                    }]
+                            ]
+                        ],
+                        ["aps/Button", {
+                                title: _("Test Connection"),
+                                onClick: function () {
+                                    var that = this;
+                                    mdojo.ECRUD.read(aps.context.vars.application.aps.id + "/dcconnectiontest", {object: object}).then(function (data) {
+                                        if (data.success) {
+                                            mdojo.UI.showSuccess(_("Correct configuration!"));
+                                        } else {
+                                            mdojo.UI.showInfo(JSON.stringify(data));
+                                        }
+                                        that.cancel();
+                                    }).otherwise(function (err) {
+                                        mdojo.UI.showError(err);
+                                        that.cancel();
+                                    });
+                                }
+                            }],
+                        ["aps/Output", {innerHTML: "<br />"}],
+                        ["aps/Output", {innerHTML: "<br />"}],
+                        ["aps/Button", {
+                                label: "Save",
+                                onClick: function () {
+                                    if ((object.name === "") || (object.apiurl === "") ||
+                                            (object.user === "") || (object.password === "")) {
+                                        mdojo.UI.showError(_("Shall not be any blank field except proxy."));
+                                    } else {
+                                        mdojo.ECRUD.create(object, aps.context.vars.application.aps.id + '/dc').then(function (data) {
+                                            mdojo.UI.showSuccess(_("Data center was successfully created."));
+                                            aps.apsc.gotoView('datacenters');
+                                            this.cancel();
+                                        }).otherwise(function (err) {
+                                            mdojo.UI.showError(err);
+                                            this.cancel();
+                                        });
+                                    }
+                                }
+                            }],
+                        ["aps/Button", {
+                                label: "Cancel",
+                                onClick: function () {
+                                    aps.apsc.gotoView('datacenters');
+                                }
+                            }]
+                    ]]);
+            });</script>
+    </head>
+    <body>
+    </body>
+</html>
