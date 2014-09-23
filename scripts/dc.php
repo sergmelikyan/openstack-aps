@@ -1,11 +1,11 @@
 <?php
 
-require "aps/2/runtime.php";
+require "common.php";
 
 /**
  * Class DC
  * @author("The Mamasu Agency")
- * @type("http://openstack.parallels.com/dc/1.1")
+ * @type("http://openstack.parallels.com/dc/1.3")
  * @implements("http://aps-standard.org/types/core/resource/1.0")
  */
 class dc extends \APS\ResourceBase {
@@ -132,6 +132,33 @@ class dc extends \APS\ResourceBase {
 
     public function upgrade() {
         
+    }
+
+    /**
+     * @verb(GET) 
+     * @path("/canbedeleted")
+     * @return(string,text/json) 
+     */
+    public function canBeDeleted() {
+        $os = new OS($this->apiurl, $this->user, $this->password);
+        $projects = $os->getProjects();
+        $return = array("success" => true);
+        if (count($projects->projects) > 0) {
+            $return['success'] = false;
+        }
+        return json_encode($return);
+    }
+
+    /**
+     * @verb(GET)
+     * @path("/listippools")
+     * @return(string, text/json)
+     */
+    public function listIpPools() {
+        $os = new OS($this->apiurl, $this->user, $this->password);
+        $subnets = $os->getSubnets();
+        
+        return json_encode($subnets->subnets);
     }
 
 }

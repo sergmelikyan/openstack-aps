@@ -4,8 +4,10 @@ define([
     "aps/xhr",
     "dojo/promise/all",
     "mamasu/UI.js",
+    "mamasu/base64.js",
     "dojo/_base/lang"
-], function (ResourceStore, Deferred, xhr, all, UI, lang) {
+], function (ResourceStore, Deferred, xhr, all, UI, base64, lang) {
+
     var ECRUD = {
         simpleStoreByType: function (type) {
             var store = new ResourceStore({
@@ -63,7 +65,7 @@ define([
             return def;
         },
         get: function (target, data) {
-            return xhr.get("/aps/2/resources/" + target + "?data=" + JSON.stringify(data));
+            return xhr.get("/aps/2/resources/" + target + "?data=" + base64.encode(JSON.stringify(data)));// + "/?data=" + encodeURI(JSON.stringify(data)));
         },
         put: function (target, data) {
             return xhr.put("/aps/2/resources/" + target, {data: data});
@@ -81,6 +83,15 @@ define([
             }).otherwise(function (err) {
                 def.resolve(_("Resource __ID__: __MESSAGE__", {ID: target, MESSAGE: UI.getErrorMsg(err)}));
             });
+            return def;
+        },
+        deleteArrayOfIDs: function(ids){
+            var promises = [];
+            for (var i = 0; i < ids.length; i++) {
+                promises.push(this.delete(ids[i]));
+            }
+            var def = new Deferred();
+            all(promises).then(def.resolve).otherwise(def.reject);
             return def;
         },
         deleteCollection: function (globalResources) {

@@ -2,7 +2,7 @@
     <id>http://openstack.parallels.trn</id>
     <name>Openstack</name>
     <version>1.0</version>
-    <release>11</release>
+    <release>13</release>
     <homepage>http://dev.apsstandard.org/doc/poa/pa-sample-integration/starter.html</homepage>
     <vendor>
     	<name>OpenStack</name>
@@ -25,15 +25,14 @@
             <var name="application" type-id="http://openstack.parallels.com/app"/>
             <plugs-to id="http://www.aps-standard.org/ui/application"/>
             <item id="dc-list" label="Data Centers">
-                <view id="datacenters" label="Data Centers">
-                	<view id="datacenter-new" label="New Data Center"></view>
-                	<view id="datacenter-settings" label="Configuring Data Center">
-                		<view id="ippool" label="IP Pool List"></view>
-                		<view id="ip-list" label="IP List"></view>
-		            	<view id="iso" label="ISO List"></view>
-		            	<view id="profiles" label="Profile list"></view>
-	            	</view>
-                </view>
+                <view id="datacenters" label="Data Centers"></view>
+                <view id="datacenter-new" label="Globals Settings"></view>
+                <view id="datacenter-edit" label="Globals Settings"></view>
+                <view id="datacenter-view" label="Globals Settings"></view>
+                <view id="ippool" label="Globals Settings"></view>
+             	<view id="ip-list" label="Globals Settings"></view>
+            	<view id="iso" label="Globals Settings"></view>
+            	<view id="profiles" label="Globals Settings"></view>
             </item>
         </navigation>
         <navigation id="ccp" label="OpenStack">

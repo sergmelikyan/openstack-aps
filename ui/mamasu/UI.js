@@ -1,12 +1,17 @@
 define([
     "dijit/registry",
     "aps/Message",
-    "mamasu/Settings.js",
-    "mamasu/maximizer.js"
-], function (registry, Message, settings, maximizer) {
+    "mamasu/Settings.js"
+], function (registry, Message, settings) {
+    function safe_tags_replage(str) {
+        return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
     var UI = {
         _showMessage: function (message, typeMsg) {
             UI.log("MESSAGE", message);
+            if (settings.htmlMessages) {
+                message = safe_tags_replage(message);
+            }
             var containerId = settings.mainPageId;
             var page = registry.byId(containerId);
             if (page === undefined) {
@@ -31,10 +36,13 @@ define([
             UI._showMessage(msg, "warning");
         },
         showError: function (error) {
-            UI._showMessage(UI.getErrorMsg(error), "error");
+            UI.log("ERROR", error);
+            var newError = UI.getErrorMsg(error);
+            UI._showMessage(newError, "error");
         },
         getErrorMsg: function (error) {
             var errMsg = "";
+            UI.log("EEEEEEEEEERROR", error);
             try {
                 var errData = JSON.parse(error.response.text);
                 errMsg = errData.message;
@@ -57,8 +65,7 @@ define([
             if (settings.environment !== "PROD") {
                 console.clear();
             }
-        },
-        maximizer: maximizer
+        }
     };
     return UI;
 });
