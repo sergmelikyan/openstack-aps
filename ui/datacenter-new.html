@@ -170,7 +170,7 @@
                                         }
                                     }).otherwise(function (err) {
                                         mdojo.UI.log("ERROR", err);
-                                        mdojo.UI.showError(_("Datacenter cannot be saved") + ": " + err.responseData);
+                                        mdojo.UI.showError(_("Unreachable connection"));// + ": " + err.responseData);
                                     });
                                 }
                             }],
