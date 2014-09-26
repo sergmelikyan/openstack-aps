@@ -28,7 +28,10 @@ class CurlManager {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $result = curl_exec($ch);
-        curl_close($ch);  // Seems like good practice
+        if (curl_errno($ch)) { //There is one error            
+            return curl_error($ch);
+        }
+        curl_close($ch);
         return $result;
     }
 

@@ -5,7 +5,7 @@ require "common.php";
 /**
  * Class DC
  * @author("The Mamasu Agency")
- * @type("http://openstack.parallels.com/dc/1.3")
+ * @type("http://openstack.parallels.com/dc/1.4")
  * @implements("http://aps-standard.org/types/core/resource/1.0")
  */
 class dc extends \APS\ResourceBase {
@@ -119,7 +119,43 @@ class dc extends \APS\ResourceBase {
     }
 
     public function provision() {
-        
+        $subDCavailable = new \APS\EventSubscription(\APS\EventSubscription::Available, "onDCavailable");
+        $subDCavailable->source->id = $this->aps->id;
+
+        $apsc = \APS\Request::getController();
+        $apsc->subscribe($this, $subDCavailable);
+    }
+
+    /**
+     * @verb(POST)
+     * @path("/onDCavailable")
+     * @param("http://aps-standard.org/types/core/resource/1.0#Notification",body)
+     */
+    public function onDCavailable($notification) {
+        $os = new OS($this->apiurl, $this->user, $this->password);
+        $subnets = $os->getExternalSubnets();
+
+        for ($i = 0; $i < count($subnets); $i++) {
+            $apsc = \APS\Request::getController();
+            $dc = $apsc->getResource($this->aps->id);
+            $ippool = \APS\TypeLibrary::newResourceByTypeId("http://openstack.parallels.com/ippool/1.2");
+
+            $ippool->id = $subnets[$i]->id;
+            $ippool->name = $subnets[$i]->name;
+            $ippool->cidr = $subnets[$i]->cidr;
+            $ippool->allocation_pools = array();
+            logme($subnets[$i]->allocation_pools);
+            for ($j = 0; $j < count($subnets[$i]->allocation_pools); $j++) {
+                $allocPool = array(
+                    "start" => $subnets[$i]->allocation_pools[$j]->start,
+                    "end" => $subnets[$i]->allocation_pools[$j]->end
+                );
+                $ippool->allocation_pools[] = $allocPool;
+            }
+            $ippool->gateway_ip = $subnets[$i]->gateway_ip;
+
+            $apsc->linkResource($dc, 'ippool', $ippool);
+        }
     }
 
     public function configure($new) {
@@ -156,9 +192,8 @@ class dc extends \APS\ResourceBase {
      */
     public function listIpPools() {
         $os = new OS($this->apiurl, $this->user, $this->password);
-        $subnets = $os->getSubnets();
-        
-        return json_encode($subnets->subnets);
+        $ipPools = $os->getExternalSubnets();
+        return json_encode($ipPools);
     }
 
 }

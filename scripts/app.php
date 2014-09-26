@@ -53,7 +53,7 @@ class app extends \APS\ResourceBase {
             $object = $apsc->getResource($object->aps->id);
         }
         $os = new OS($object->apiurl, $object->user, $object->password);
-        return json_encode(array("success" => $os->isReachable()));
+        return json_encode($os->isReachable());
     }
 
 }
