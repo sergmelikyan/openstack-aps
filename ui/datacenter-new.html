@@ -62,7 +62,7 @@
                 }
 
                 load(["aps/PageContainer", {id: "main_page"}, [
-                        ['<h1>', {innerHTML: _("Create datacenter")}],["<br>"],
+                        ['<h1>', {innerHTML: _("Create datacenter")}], ["<br>"],
                         ["aps/FieldSet", {
                                 title: _("Data Center Settings")
                             }, [
@@ -145,12 +145,17 @@
                             ]],
                         ["aps/Output", {innerHTML: "<br /><br />"}],
                         ["aps/Button", {
-                                label: "Save",
+                                label: _("Save"),
                                 onClick: function () {
                                     var that = this;
                                     checkConnection(that).then(function () {
-                                        if ((object.name === "") || (object.apiurl === "") ||
-                                                (object.user === "") || (object.password === "")) {
+                                        object.set("name", object.name.trim());
+                                        object.set("apiurl", object.apiurl.trim());
+                                        object.set("user", object.user.trim());
+                                        object.set("password", object.password.trim());
+
+                                        if ((object.name == "") || (object.apiurl == "") ||
+                                                (object.user == "") || (object.password == "")) {
                                             mdojo.UI.showError(_("Shall not be any blank field except proxy."));
                                             that.cancel();
                                         } else {
@@ -164,6 +169,7 @@
                                             });
                                         }
                                     }).otherwise(function (err) {
+                                        mdojo.UI.log("ERROR", err);
                                         mdojo.UI.showError(_("Datacenter cannot be saved") + ": " + err.responseData);
                                     });
                                 }
