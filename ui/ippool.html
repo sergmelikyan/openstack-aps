@@ -22,8 +22,9 @@
                 var ippools = new ResourceStore({
                     target: "/aps/2/resources/" + dc.aps.id + "/listippools"
                 });
+
                 var view = ["aps/PageContainer", [
-                        ['<h1>', {innerHTML: dc.name}],
+                        ["<h1>", {innerHTML: dc.name}],
                         ["<div>", {
                                 class: "tabs"
                             }, [
@@ -81,9 +82,22 @@
                                 onClick: function () {
                                     aps.apsc.gotoView('datacenters');
                                 }
+//                            }],
+//                        ["<div>", {
+//                                id: "inspector1"
+//                            }],
+//                        ["<div>", {
+//                                id: "inspector2"
                             }]
                     ]];
-                load(view);
+                load(view).then(function () {
+//                    ippools.query("network").then(function (data) {
+//                        mdojo.Widgets.ObjectInspector(data, "inspector2");
+//                    });
+//                    ippools.query().then(function (data) {
+//                        mdojo.Widgets.ObjectInspector(data, "inspector1");
+//                    });
+                });
             });</script>
     </head>
     <body>

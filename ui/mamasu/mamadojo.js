@@ -1,4 +1,4 @@
-define(['mamasu/Settings.js', 'mamasu/Types.js', 'mamasu/UI.js', 'mamasu/ECRUD.js'], function (settings, Types, UI, ECRUD) {
+define(['mamasu/Settings.js', 'mamasu/Types.js', 'mamasu/UI.js', 'mamasu/ECRUD.js', "mamasu/Widgets.js"], function (settings, Types, UI, ECRUD, Widgets) {
     UI.clearConsole();
 
     //http://patorjk.com/software/taag/#p=display&f=Big&t=Mamasu%20Lib.
@@ -15,6 +15,7 @@ define(['mamasu/Settings.js', 'mamasu/Types.js', 'mamasu/UI.js', 'mamasu/ECRUD.j
         environment: settings.environment,
         Types: Types,
         UI: UI,
-        ECRUD: ECRUD
+        ECRUD: ECRUD,
+        Widgets: Widgets
     };
 });
