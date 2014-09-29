@@ -3,6 +3,6 @@
 require "aps/2/runtime.php";
 require "controllers/OS.php";
 
-function logme($var) {
-    error_log("\nOpen Stack ==> " . print_r($var, true));
+function logme($title, $var = null) {
+    error_log("\n\nOpen Stack ==> [$title]" . (is_null($var) ? "" : json_encode($var, true)));
 }

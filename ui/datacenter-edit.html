@@ -41,7 +41,9 @@
                     var def = new Deferred();
                     changeTestStatus('doing');
                     mdojo.ECRUD.get(aps.context.vars.application.aps.id + "/dcconnectiontest", getPlainValue(dc)).then(function (data) {
-                        that.cancel();
+                        if (that !== undefined) {
+                            that.cancel();
+                        }
                         if (data.success) {
                             changeTestStatus('ok');
                             mdojo.UI.showSuccess(_("Correct configuration!"));
@@ -52,7 +54,9 @@
                             def.reject({success: false, responseData: data.responseData});
                         }
                     }).otherwise(function (err) {
-                        that.cancel();
+                        if (that !== undefined) {
+                            that.cancel();
+                        }
                         changeTestStatus('ko');
                         mdojo.UI.showError(err);
                         def.reject({success: false, responseData: data.responseData});
@@ -61,30 +65,6 @@
                 }
 
                 var view = ["aps/PageContainer", {id: "main_page"}, [
-//                        ["aps/Toolbar", [
-//                                ["aps/ToolbarButton", {
-//                                        label: _("Settings"),
-//                                        disabled: true
-//                                    }],
-//                                ["aps/ToolbarButton", {
-//                                        label: _("Ippools"),
-//                                        onClick: function () {
-//                                            aps.apsc.gotoView('ippool');
-//                                        }
-//                                    }],
-//                                ["aps/ToolbarButton", {
-//                                        label: _("ISO"),
-//                                        onClick: function () {
-//                                            aps.apsc.gotoView('iso');
-//                                        }
-//                                    }],
-//                                ["aps/ToolbarButton", {
-//                                        label: _("Profile"),
-//                                        onClick: function () {
-//                                            aps.apsc.gotoView('profiles');
-//                                        }
-//                                    }]
-//                            ]],
                         ["aps/Container", [
                                 ['<h1>', {innerHTML: dc.name}], ["<br>"],
                                 ["aps/FieldSet", {
@@ -179,7 +159,7 @@
                                         label: "Save",
                                         onClick: function () {
                                             var that = this;
-                                            checkConnection(that).then(function () {
+                                            checkConnection().then(function () {
                                                 if ((dc.name === "") || (dc.apiurl === "") ||
                                                         (dc.user === "") || (dc.password === "")) {
                                                     mdojo.UI.showError(_("Shall not be any blank field except proxy."));
@@ -187,7 +167,7 @@
                                                 } else {
                                                     mdojo.ECRUD.update(getPlainValue(dc)).then(function (updatedDC) {
                                                         WizardData.put({dc: updatedDC});
-                                                        mdojo.UI.showSuccess(_("Data center was successfully updated."));
+                                                        mdojo.UI.showSuccess(_("Changes are saved correctly."));
                                                         aps.apsc.gotoView('datacenters');
                                                     }).otherwise(function (err) {
                                                         mdojo.UI.showError(err);
@@ -195,7 +175,7 @@
                                                     });
                                                 }
                                             }).otherwise(function (err) {
-                                                mdojo.UI.showError(_("Datacenter cannot be saved") + ": " + err.responseData);
+                                                mdojo.UI.showError(_("Changes cannot be saved") + ": " + err.responseData);
                                             });
                                         }
                                     }],

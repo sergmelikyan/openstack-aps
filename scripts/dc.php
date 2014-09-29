@@ -5,7 +5,7 @@ require "common.php";
 /**
  * Class DC
  * @author("The Mamasu Agency")
- * @type("http://openstack.parallels.com/dc/1.4")
+ * @type("http://openstack.parallels.com/dc/1.6")
  * @implements("http://aps-standard.org/types/core/resource/1.0")
  */
 class dc extends \APS\ResourceBase {
@@ -63,6 +63,12 @@ class dc extends \APS\ResourceBase {
     public $password;
 
     /**
+     * @type("string")
+     * @title("Proxy")
+     */
+    public $proxy;
+
+    /**
      * @type("integer")
      * @title("Num Organizations")
      */
@@ -86,41 +92,10 @@ class dc extends \APS\ResourceBase {
      */
     public $numippools = 0;
 
-    public function organizationLink() {
-        $this->numorganizations += 1;
-    }
-
-    public function organizationUnlink() {
-        $this->numorganizations -= 1;
-    }
-
-    public function profileLink() {
-        $this->numprofiles += 1;
-    }
-
-    public function profileUnlink() {
-        $this->numprofiles -= 1;
-    }
-
-    public function imageLink() {
-        $this->numimages += 1;
-    }
-
-    public function imageUnlink() {
-        $this->numimages -= 1;
-    }
-
-    public function ippoolLink() {
-        $this->numippools += 1;
-    }
-
-    public function ippoolUnlink() {
-        $this->numippools -= 1;
-    }
-
     public function provision() {
+        logme("provision");
         $subDCavailable = new \APS\EventSubscription(\APS\EventSubscription::Available, "onDCavailable");
-        $subDCavailable->source->id = $this->aps->id;
+        $subDCavailable->source = $this;
 
         $apsc = \APS\Request::getController();
         $apsc->subscribe($this, $subDCavailable);
@@ -132,34 +107,17 @@ class dc extends \APS\ResourceBase {
      * @param("http://aps-standard.org/types/core/resource/1.0#Notification",body)
      */
     public function onDCavailable($notification) {
-        $os = new OS($this->apiurl, $this->user, $this->password);
-        $subnets = $os->getExternalSubnets();
-
-        for ($i = 0; $i < count($subnets); $i++) {
-            $apsc = \APS\Request::getController();
-            $dc = $apsc->getResource($this->aps->id);
-            $ippool = \APS\TypeLibrary::newResourceByTypeId("http://openstack.parallels.com/ippool/1.2");
-
-            $ippool->id = $subnets[$i]->id;
-            $ippool->name = $subnets[$i]->name;
-            $ippool->cidr = $subnets[$i]->cidr;
-            $ippool->allocation_pools = array();
-            logme($subnets[$i]->allocation_pools);
-            for ($j = 0; $j < count($subnets[$i]->allocation_pools); $j++) {
-                $allocPool = array(
-                    "start" => $subnets[$i]->allocation_pools[$j]->start,
-                    "end" => $subnets[$i]->allocation_pools[$j]->end
-                );
-                $ippool->allocation_pools[] = $allocPool;
-            }
-            $ippool->gateway_ip = $subnets[$i]->gateway_ip;
-
-            $apsc->linkResource($dc, 'ippool', $ippool);
-        }
+        logme("onDCAvailable");
+        $this->updateDatacenter();
     }
 
     public function configure($new) {
-        
+        logme("configure");
+        $this->name = $new->name;
+        $this->user = $new->user;
+        $this->password = $new->password;
+        $this->proxy = $new->proxy;
+        $this->updateDatacenter();
     }
 
     public function unprovision() {
@@ -171,29 +129,78 @@ class dc extends \APS\ResourceBase {
     }
 
     /**
-     * @verb(GET) 
-     * @path("/canbedeleted")
-     * @return(string,text/json) 
-     */
-    public function canBeDeleted() {
-        $os = new OS($this->apiurl, $this->user, $this->password);
-        $projects = $os->getProjects();
-        $return = array("success" => true);
-        if (count($projects->projects) > 0) {
-            $return['success'] = false;
-        }
-        return json_encode($return);
-    }
-
-    /**
      * @verb(GET)
-     * @path("/listippools")
+     * @path("/updatedatacenter")
      * @return(string, text/json)
      */
-    public function listIpPools() {
+    public function updateDatacenter() {
+        logme("updateDatacenter => " . print_r($this, true));
+        $this->synchIpPools();
+        return json_encode($this);
+    }
+
+    private function synchIpPools() {
+        logme("synchIpPools");
+        $apsc = \APS\Request::getController()->impersonate($this->app->aps->id);
+        $dc = $apsc->getResource($this->aps->id);
+        $previousPools = json_decode($apsc->getIo()->sendRequest(\APS\Proto::GET, "/aps/2/resources/" . $dc->aps->id . "/ippool"));
+        $nextsPools = array();
+
         $os = new OS($this->apiurl, $this->user, $this->password);
-        $ipPools = $os->getExternalSubnets();
-        return json_encode($ipPools);
+        $subnets = $os->getExternalSubnets();
+
+        logme("PREVIOUS POOLS", $previousPools);
+        logme("CURRENT POOLS", $subnets);
+        for ($i = 0; $i < count($subnets); $i++) {
+            //If subnet already exists in DC doesn't creates it
+            $createIt = true;
+            for ($j = 0; $j < count($previousPools); $j++) {
+                if ($previousPools[$j]->id == $subnets[$i]->id) {
+                    $createIt = false;
+                }
+            }
+            if ($createIt) {
+                $ippool = \APS\TypeLibrary::newResourceByTypeId("http://openstack.parallels.com/ippool/1.2");
+
+                $ippool->id = $subnets[$i]->id;
+                $ippool->name = $subnets[$i]->name;
+                $ippool->cidr = $subnets[$i]->cidr;
+                $ippool->allocation_pools = array();
+                for ($j = 0; $j < count($subnets[$i]->allocation_pools); $j++) {
+                    $allocPool = array(
+                        "start" => $subnets[$i]->allocation_pools[$j]->start,
+                        "end" => $subnets[$i]->allocation_pools[$j]->end
+                    );
+                    $ippool->allocation_pools[] = $allocPool;
+                }
+                $ippool->gateway_ip = $subnets[$i]->gateway_ip;
+                $ippool->aps->link['dc'] = new \APS\Link($this, "dc", $ippool);
+
+                $apsc->linkResource($this, "ippool", $ippool);
+                $nextsPools[] = $ippool;
+            }
+        }
+
+        //If subnet is not in subnets list retrieved from OS, will be tried to be erase it
+        for ($j = 0; $j < count($previousPools); $j++) {
+            $remove = true;
+            for ($i = 0; $i < count($subnets); $i++) {
+                /*
+                 *  TODO: save conflicts
+                 */
+
+                if ($subnets[$i]->id == $previousPools[$j]->id) {
+                    $remove = false;
+                }
+            }
+            if ($remove) {
+                $apsc->getIo()->sendRequest(\APS\Proto::DELETE, "/aps/2/resources/" . $previousPools[$j]->aps->id);
+            }
+        }
+
+        $finalIpPools = json_decode($apsc->getIo()->sendRequest(\APS\Proto::GET, "/aps/2/resources/" . $dc->aps->id . "/ippool"));
+        $this->numippools = count($finalIpPools);
+        $apsc->updateResource($this);
     }
 
 }

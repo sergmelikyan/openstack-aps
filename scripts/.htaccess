@@ -11,6 +11,7 @@ Options +FollowSymLinks +ExecCGI
     RewriteRule ^ip(|/.*)$ ip.php?q=$1 [L,QSA]
     RewriteRule ^ipassigned(|/.*)$ ipassigned.php?q=$1 [L,QSA]
     RewriteRule ^ippool(|/.*)$ ippool.php?q=$1 [L,QSA]
+    RewriteRule ^ippools(|/.*)$ ippool.php?q=$1 [L,QSA]
     RewriteRule ^organization(|/.*)$ organization.php?q=$1 [L,QSA]
     RewriteRule ^profile(|/.*)$ profile.php?q=$1 [L,QSA]
     RewriteRule ^unmanagedve(|/.*)$ unmanagedve.php?q=$1 [L,QSA]

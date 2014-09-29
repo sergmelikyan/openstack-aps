@@ -34,9 +34,9 @@ class OSApi extends CurlManager {
         return $return;
     }
 
-    private function sendWithToken($url, $port, $api, $method, $parameters = array()) {
+    private function sendWithToken($url, $port, $api, $method, $parameters = array(), $headers = array()) {
         $token = $this->getToken();
-        $headers = array("X-Auth-Token: " . $token->access->token->id);
+        $headers[] = array("X-Auth-Token: " . $token->access->token->id);
         return $this->send($url, $port, $api, $method, $parameters, $headers);
     }
 
@@ -61,6 +61,37 @@ class OSApi extends CurlManager {
 
     function getProjects() {
         return $this->sendWithToken($this->url, 5000, "v3/projects", "GET");
+    }
+    
+    function createImage($name, $location = null, $id = null, $visibility = null, $tags = null) {
+        $data = array('name' => $name);
+        if(!empty($id)) {
+            $data['id'] = $id;
+        }
+        if(!empty($visibility)) {
+            $data['visibility'] = $visibility;
+        }
+        if(!empty($tags)) {
+            $data['tags'] = $tags;
+        }
+        return $this->sendWithToken($this->url, 9292, "/v2/images", "POST", $data, array('Location:'.$location));
+    }
+    
+    function listImages() {
+        return $this->sendWithToken($this->url, 9292, "/v2/images", "GET");
+    }
+    
+    function getImageDetails($image_id) {
+        return $this->send($this->url, 9292, "/v2/images/".$image_id, "GET");
+    }
+    
+//    function updateImage($image_id) {
+//        $data = array("tags" => array('test1', 'test2'));
+//        return $this->send($this->url, 9292, "/v2/images/".$image_id, "PATCH");
+//    }
+    
+    function deleteImage($image_id) {
+        return $this->sendWithToken($this->url, 9292, "/v2/images".$image_id, "DELETE");
     }
 
 }

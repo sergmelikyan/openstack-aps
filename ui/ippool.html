@@ -20,7 +20,7 @@
                 var dc = getStateful(data.dc);
 
                 var ippools = new ResourceStore({
-                    target: "/aps/2/resources/" + dc.aps.id + "/listippools"
+                    target: "/aps/2/resources/" + dc.aps.id + "/ippool"
                 });
 
                 var view = ["aps/PageContainer", [
@@ -46,8 +46,7 @@
                                                     ]],
                                                 ["<li>", {id: "last-tab"}, [
                                                         ["<a>", {href: "javascript:void(0);", onclick: function () {
-                                                                    mdojo.UI.showInfo("Under development");
-                                                                    //aps.apsc.gotoView('iso');
+                                                                    aps.apsc.gotoView('iso');
                                                                 }}, [
                                                                 ["<span>", {innerHTML: _("ISO")}]
                                                             ]]
@@ -67,9 +66,11 @@
                                                     return new Button({
                                                         label: 'IP List',
                                                         onClick: function () {
-                                                            mdojo.UI.showInfo("Under development");
                                                             this.cancel();
-                                                            //aps.apsc.gotoView('ip-list');
+                                                            var data = WizardData.get();
+                                                            data.subnet = row.aps.id;
+                                                            WizardData.put(data);
+                                                            aps.apsc.gotoView('ip-list');
                                                         }
                                                     });
                                                 }
@@ -82,12 +83,6 @@
                                 onClick: function () {
                                     aps.apsc.gotoView('datacenters');
                                 }
-//                            }],
-//                        ["<div>", {
-//                                id: "inspector1"
-//                            }],
-//                        ["<div>", {
-//                                id: "inspector2"
                             }]
                     ]];
                 load(view).then(function () {

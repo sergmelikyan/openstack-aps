@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                "aps/load",
+                "aps/Output",
+                "aps/Memory",
+                "dojox/mvc/at",
+                "aps/Switch",
+                "aps/ready!",
+                "aps/Button",
+                "aps/CheckBox"
+            ], function(load, Output, Memory, at, Switch, ready, Button, CheckBox) {
+                "use strict";
+
+                var data = [{
+                        aps: {
+                            id: "1"
+                        },
+                        info: {
+                            name: "Image 1",
+                            os: "CentOS 6.6"
+                        }
+                    }];
+
+                data = {
+                    aps: {
+                        id: 1
+                    },
+                    info: {
+                        name: "Image 1",
+                        os: "CentOS 6.6"
+                    }
+                }
+
+                var view = ["aps/PageContainer", [
+                        ["aps/Container", [
+                                ['<h1>', {innerHTML: "Data Center 1"}],
+                                ["<div>", {
+                                        class: "tabs"
+                                    }, [
+                                        ["<div>", {
+                                                class: "tabs-area"
+                                            }, [
+                                                ["<ul>", [
+                                                        ["<li>", {id: "first-tab"}, [
+                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);", onclick: function() {
+                                                                            aps.apsc.gotoView('ippool');
+                                                                        }}, [
+                                                                        ["<span>", {innerHTML: _("Settings")}]
+                                                                    ]]
+                                                            ]],
+                                                        ["<li>", {}, [
+                                                                ["<a>", {href: "javascript:void(0);", onclick: function() {
+                                                                            aps.apsc.gotoView('ippool');
+                                                                        }}, [
+                                                                        ["<span>", {innerHTML: _("Ippools")}]
+                                                                    ]]
+                                                            ]],
+                                                        ["<li>", {id: "last-tab", class: "active"}, [
+                                                                ["<a>", {href: "javascript:void(0);"}, [
+                                                                        ["<span>", {innerHTML: _("ISO")}]
+                                                                    ]]
+                                                            ]]
+                                                    ]]
+                                            ]]
+                                    ]],
+                                ["<h2>", {
+                                        innerHTML: "Register new ISO"
+                                    }],
+                                ["aps/FieldSet", {title: "ISO Settings"}, [
+                                        ["aps/TextBox", {
+                                                label: "ISO name",
+                                                id: "iso_name",
+                                                description: "ISO name",
+                                                value: data.info.name
+                                            }],
+                                        ["aps/Select", {
+                                                label: "Open Stack ISO",
+                                                options: [
+                                                    {label: "Image 1", value: 1, selected: false},
+                                                    {label: "Image 2", value: 2, selected: false},
+                                                    {label: "Image 3", value: 3, selected: true}
+                                                ]
+                                            }]
+                                    ]],
+                                ["aps/Button", {
+                                        id: "save",
+                                        title: _("Save"),
+                                        onClick: function() {
+                                            aps.apsc.gotoView('iso');
+                                        }
+                                    }]
+                            ]]
+                    ]];
+                load(view);
+            });</script>
+    </head>
+    <body>
+    </body>
+</html>

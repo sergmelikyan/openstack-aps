@@ -7,22 +7,22 @@
                 "aps/load",
                 "dijit/registry",
                 "dojo/Deferred",
+                "dojo/promise/all",
                 "aps/Container",
                 "dojox/mvc/at",
                 "aps/Switch",
-                "aps/ready!",
                 "aps/Button",
                 "aps/CheckBox",
                 "aps/WizardData",
-                "mamasu/mamadojo.js"
-            ], function (load, registry, Deferred, Container, at, Switch, ready, Button, CheckBox, WizardData, mdojo) {
+                "mamasu/mamadojo.js",
+                "aps/ready!"
+            ], function (load, registry, Deferred, all, Container, at, Switch, Button, CheckBox, WizardData, mdojo) {
                 "use strict";
                 function canBeDeleted(dcApsId) {
                     var def = new Deferred();
                     mdojo.ECRUD.get(dcApsId + "/canbedeleted").then(def.resolve).otherwise(def.reject);
                     return def;
                 }
-
                 var tobedeleted = [];
                 load(["aps/PageContainer", {id: 'main_page'}, [
                         ["aps/FieldSet", {
@@ -47,7 +47,7 @@
                                                 mdojo.ECRUD.deleteArrayOfIDs(tobedeleted).then(function () {
                                                     that.cancel();
                                                     registry.byId('gridId').refresh();
-                                                    mdojo.UI.showSuccess("Selected DCs were successfully deleted!");
+                                                    mdojo.UI.showSuccess(_("Selected DCs were successfully deleted!"));
                                                 }).otherwise(function (err) {
                                                     that.cancel();
                                                     mdojo.UI.showError(err);
@@ -56,11 +56,36 @@
                                                 that.cancel();
                                             }
                                         }
+                                    }],
+                                ["aps/ToolbarButton", {
+                                        label: _("Refresh"),
+                                        style: "float:right",
+                                        iconName: "/pem/images/icons/refresh_16x16.gif",
+                                        onClick: function () {
+                                            var that = this;
+                                            mdojo.ECRUD.read(aps.context.vars.application.aps.id + "/dc").then(function (dcs) {
+                                                var promises = [];
+                                                for (var i = 0; i < dcs.length; i++) {
+                                                    promises = mdojo.ECRUD.get(dcs[i].aps.id + "/updatedatacenter");
+                                                }
+                                                all(promises).then(function () {
+                                                    that.cancel();
+                                                    registry.byId('dcGrid').refresh();
+                                                    mdojo.UI.showSuccess(_("Data centers information was successfully updated."));
+                                                }).otherwise(function (err) {
+                                                    that.cancel();
+                                                    mdojo.UI.showError(err);
+                                                });
+                                            }).otherwise(function (err) {
+                                                that.cancel();
+                                                mdojo.UI.showError(err);
+                                            });
+                                        }
                                     }]
                             ]],
                         ["aps/Grid", {
                                 store: mdojo.ECRUD.simpleStoreByTarget(aps.context.vars.application.aps.id + "/dc"),
-                                id: "gridId",
+                                id: "dcGrid",
                                 columns: [
                                     {name: "",
                                         renderCell: function (row) {

@@ -70,33 +70,64 @@
                     }
                 };
                 var view = ["aps/PageContainer", [
-                        ["<h2>", {
-                                innerHTML: data.info.name
-                            }],
-                        ["aps/Toolbar", [
-                                ["aps/ToolbarButton", {
-                                        label: _("Settings"),
-                                        onClick: function () {
-                                            aps.apsc.gotoView('datacenter-settings');
-                                        }
-                                    }],
-                                ["aps/ToolbarButton", {
-                                        label: _("Ippools"),
-                                        onClick: function () {
-                                            aps.apsc.gotoView('ippool');
-                                        }
-                                    }],
-                                ["aps/ToolbarButton", {
-                                        label: _("ISO"),
-                                        disabled: true
-                                    }],
-                                ["aps/ToolbarButton", {
-                                        label: _("Profile"),
-                                        onClick: function () {
-                                            aps.apsc.gotoView('profiles');
-                                        }
-                                    }]
-                            ]],
+                        ["aps/Container", [
+                                ['<h1>', {innerHTML: data.info.name}],
+                                ["<div>", {
+                                        class: "tabs"
+                                    }, [
+                                        ["<div>", {
+                                                class: "tabs-area"
+                                            }, [
+                                                ["<ul>", [
+                                                        ["<li>", {id: "first-tab"}, [
+                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);", onclick: function () {
+                                                                            aps.apsc.gotoView('ippool');
+                                                                        }}, [
+                                                                        ["<span>", {innerHTML: _("Settings")}]
+                                                                    ]]
+                                                            ]],
+                                                        ["<li>", {}, [
+                                                                ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                            aps.apsc.gotoView('ippool');
+                                                                        }}, [
+                                                                        ["<span>", {innerHTML: _("Ippools")}]
+                                                                    ]]
+                                                            ]],
+                                                        ["<li>", {id: "last-tab", class: "active"}, [
+                                                                ["<a>", {href: "javascript:void(0);"}, [
+                                                                        ["<span>", {innerHTML: _("ISO")}]
+                                                                    ]]
+                                                            ]]
+                                                    ]]
+                                            ]]
+                                    ]],
+//                        ["<h2>", {
+//                                innerHTML: data.info.name
+//                            }],
+//                        ["aps/Toolbar", [
+//                                ["aps/ToolbarButton", {
+//                                        label: _("Settings"),
+//                                        onClick: function () {
+//                                            aps.apsc.gotoView('datacenter-settings');
+//                                        }
+//                                    }],
+//                                ["aps/ToolbarButton", {
+//                                        label: _("Ippools"),
+//                                        onClick: function () {
+//                                            aps.apsc.gotoView('ippool');
+//                                        }
+//                                    }],
+//                                ["aps/ToolbarButton", {
+//                                        label: _("ISO"),
+//                                        disabled: true
+//                                    }],
+//                                ["aps/ToolbarButton", {
+//                                        label: _("Profile"),
+//                                        onClick: function () {
+//                                            aps.apsc.gotoView('profiles');
+//                                        }
+//                                    }]
+//                            ]],
                         ["aps/Container", {
                                 title: "ISO Images"
                             }],
@@ -105,7 +136,7 @@
                                         label: "Register New ISO Image",
                                         iconClass: "sb-add",
                                         onClick: function () {
-                                            this.cancel();
+                                            aps.apsc.gotoView('iso-new');
                                         }
                                     }],
                                 ["aps/ToolbarButton", {
@@ -134,15 +165,17 @@
                                     {name: "Usage", field: "info.usage"},
                                     {name: "Actions", renderCell: function (row, data) {
                                             return new Button({
-                                                label: 'Edit',
+                                                label: _('Edit'),
                                                 onClick: function () {
-                                                    this.cancel();
+                                                    aps.apsc.gotoView('iso-edit');
+//                                                    this.cancel(); 
                                                 }
                                             });
                                         }
                                     }
                                 ]
                             }]
+                        ]]
                     ]];
                 load(view);
             });</script>
