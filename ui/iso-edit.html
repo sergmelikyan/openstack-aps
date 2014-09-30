@@ -9,12 +9,17 @@
                 "aps/Memory",
                 "dojox/mvc/at",
                 "aps/Switch",
-                "aps/ready!",
                 "aps/Button",
-                "aps/CheckBox"
-            ], function(load, Output, Memory, at, Switch, ready, Button, CheckBox) {
+                "aps/CheckBox",
+                "aps/WizardData",
+                "mamasu/mamadojo.js",
+                "aps/ready!"
+            ], function (load, Output, Memory, at, Switch, Button, CheckBox, WizardData, mdojo) {
                 "use strict";
 
+                var data = WizardData.get();
+                var dc = data.dc;
+                
                 var data = [{
                         aps: {
                             id: "1"
@@ -46,21 +51,21 @@
                                             }, [
                                                 ["<ul>", [
                                                         ["<li>", {id: "first-tab"}, [
-                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);", onclick: function() {
+                                                                ["<a>", {href: "javascript:void(0);", onclick: function () {
                                                                             aps.apsc.gotoView('ippool');
                                                                         }}, [
                                                                         ["<span>", {innerHTML: _("Settings")}]
                                                                     ]]
                                                             ]],
                                                         ["<li>", {}, [
-                                                                ["<a>", {href: "javascript:void(0);", onclick: function() {
+                                                                ["<a>", {href: "javascript:void(0);", onclick: function () {
                                                                             aps.apsc.gotoView('ippool');
                                                                         }}, [
                                                                         ["<span>", {innerHTML: _("Ippools")}]
                                                                     ]]
                                                             ]],
                                                         ["<li>", {id: "last-tab", class: "active"}, [
-                                                                ["<a>", {href: "javascript:void(0);"}, [
+                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
                                                                         ["<span>", {innerHTML: _("ISO")}]
                                                                     ]]
                                                             ]]
@@ -82,7 +87,7 @@
                                 ["aps/Button", {
                                         id: "save",
                                         title: _("Save"),
-                                        onClick: function() {
+                                        onClick: function () {
                                             aps.apsc.gotoView('iso');
 //                                    this.cancel();
                                         }

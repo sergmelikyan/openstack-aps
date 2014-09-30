@@ -7,71 +7,30 @@
                 "aps/load",
                 "aps/Output",
                 "aps/Memory",
+                "dojo/promise/all",
                 "dojox/mvc/at",
+                "dojox/mvc/getStateful",
                 "aps/Switch",
-                "aps/ready!",
+                "dijit/registry",
                 "aps/Button",
-                "aps/CheckBox"
-            ], function (load, Output, Memory, at, Switch, ready, Button, CheckBox) {
+                "aps/CheckBox",
+                "aps/WizardData",
+                "mamasu/mamadojo.js",
+                "aps/ready!"
+            ], function (load, Output, Memory, all, at, getStateful, Switch, registry, Button, CheckBox, WizardData, mdojo) {
                 "use strict";
 
-                var data = [{
-                        aps: {
-                            id: "1"
-                        },
-                        info: {
-                            name: "Image 1",
-                            os: "CentOS 6.6",
-                            image: "https://mockimage.com/image1",
-                            usage: "15"
-                        }
-                    }, {
-                        aps: {
-                            id: "2"
-                        },
-                        info: {
-                            name: "Image 2",
-                            os: "Ubuntu 12.0.4",
-                            image: "https://mockimage.com/image2",
-                            usage: "0"
-                        }
-                    }, {
-                        aps: {
-                            id: "3"
-                        },
-                        info: {
-                            name: "Image 3",
-                            os: "Ubuntu 12.0.4",
-                            image: "https://mockimage.com/image3",
-                            usage: "41"
-                        }
-                    }];
-
-
-                var data_center = new Memory({
-                    data: data,
-                    id_data_center: "aps.id"
+                var data = WizardData.get();
+                var dc = data.dc;
+                var tobedeleted = [];
+                var status = getStateful({
+                    deletedisabled: true
                 });
 
-                function rnd(max) {
-                    max = max || 10;
-                    return Math.round(Math.random() * max);
-                }
-                var data = {
-                    aps: {
-                        id: 1
-                    },
-                    info: {
-                        name: "Data Center " + 1,
-                        n_organizations: rnd(),
-                        n_head_templates: rnd(),
-                        n_images: rnd(),
-                        n_ippools: rnd()
-                    }
-                };
-                var view = ["aps/PageContainer", [
+                var store = mdojo.ECRUD.simpleStoreByTarget(dc.aps.id + "/image");
+                var view = ["aps/PageContainer", {id: "main_page"}, [
                         ["aps/Container", [
-                                ['<h1>', {innerHTML: data.info.name}],
+                                ['<h1>', {innerHTML: data.name}],
                                 ["<div>", {
                                         class: "tabs"
                                     }, [
@@ -80,7 +39,7 @@
                                             }, [
                                                 ["<ul>", [
                                                         ["<li>", {id: "first-tab"}, [
-                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);", onclick: function () {
+                                                                ["<a>", {href: "javascript:void(0);", onclick: function () {
                                                                             aps.apsc.gotoView('ippool');
                                                                         }}, [
                                                                         ["<span>", {innerHTML: _("Settings")}]
@@ -94,88 +53,118 @@
                                                                     ]]
                                                             ]],
                                                         ["<li>", {id: "last-tab", class: "active"}, [
-                                                                ["<a>", {href: "javascript:void(0);"}, [
+                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
                                                                         ["<span>", {innerHTML: _("ISO")}]
                                                                     ]]
                                                             ]]
                                                     ]]
                                             ]]
                                     ]],
-//                        ["<h2>", {
-//                                innerHTML: data.info.name
-//                            }],
-//                        ["aps/Toolbar", [
-//                                ["aps/ToolbarButton", {
-//                                        label: _("Settings"),
-//                                        onClick: function () {
-//                                            aps.apsc.gotoView('datacenter-settings');
-//                                        }
-//                                    }],
-//                                ["aps/ToolbarButton", {
-//                                        label: _("Ippools"),
-//                                        onClick: function () {
-//                                            aps.apsc.gotoView('ippool');
-//                                        }
-//                                    }],
-//                                ["aps/ToolbarButton", {
-//                                        label: _("ISO"),
-//                                        disabled: true
-//                                    }],
-//                                ["aps/ToolbarButton", {
-//                                        label: _("Profile"),
-//                                        onClick: function () {
-//                                            aps.apsc.gotoView('profiles');
-//                                        }
-//                                    }]
-//                            ]],
-                        ["aps/Container", {
-                                title: "ISO Images"
-                            }],
-                        ["aps/Toolbar",
-                            [["aps/ToolbarButton", {
-                                        label: "Register New ISO Image",
-                                        iconClass: "sb-add",
-                                        onClick: function () {
-                                            aps.apsc.gotoView('iso-new');
-                                        }
+                                ["aps/Container", {
+                                        title: "ISO Images"
                                     }],
-                                ["aps/ToolbarButton", {
-                                        label: "Refresh",
-                                        iconClass: "sb-refresh",
-                                        onClick: function () {
-                                            this.cancel();
-                                        }
-                                    }],
-                                ["aps/ToolbarButton", {
-                                        label: "Delete",
-                                        iconClass: "sb-delete",
-                                        disabled: true
-                                    }]
-                            ]],
-                        ["aps/Grid", {
-                                store: data_center,
-                                id: "gridId",
-                                columns: [
-                                    {name: "", renderCell: function () {
-                                            return new CheckBox();
-                                        }},
-                                    {name: "Name", field: "info.name"},
-                                    {name: "OS", field: "info.os"},
-                                    {name: "Image", field: "info.image"},
-                                    {name: "Usage", field: "info.usage"},
-                                    {name: "Actions", renderCell: function (row, data) {
-                                            return new Button({
-                                                label: _('Edit'),
+                                ["aps/Toolbar",
+                                    [["aps/ToolbarButton", {
+                                                label: "Register New ISO Image",
+                                                iconClass: "sb-add",
                                                 onClick: function () {
-                                                    aps.apsc.gotoView('iso-edit');
-//                                                    this.cancel(); 
+                                                    aps.apsc.gotoView('iso-new');
                                                 }
-                                            });
-                                        }
-                                    }
-                                ]
-                            }]
-                        ]]
+                                            }],
+                                        ["aps/ToolbarButton", {
+                                                label: "Refresh",
+                                                iconClass: "sb-refresh",
+                                                onClick: function () {
+                                                    var that = this;
+                                                    store.query().then(function (images) {
+                                                        var promises = [];
+                                                        for (var i = 0; i < images.length; i++) {
+                                                            promises.push(mdojo.ECRUD.put(images[i].aps.id + "/updateimage", ""));
+                                                        }
+                                                        all(promises).then(function (data) {
+                                                            mdojo.UI.showSuccess(_("All images where refreshed."));
+                                                            registry.byId('imagesGrid').refresh();
+                                                            that.cancel();
+                                                        }).otherwise(function (err) {
+                                                            mdojo.UI.showError(err);
+                                                            that.cancel();
+                                                        });
+                                                    }).otherwise(function (err) {
+                                                        mdojo.UI.showError(err);
+                                                        that.cancel();
+                                                    });
+
+                                                }
+                                            }],
+                                        ["aps/ToolbarButton", {
+                                                label: "Delete",
+                                                iconClass: "sb-delete",
+                                                disabled: at(status, 'deletedisabled'),
+                                                onClick: function () {
+                                                    var that = this;
+                                                    if (confirm(_("Selected images will be removed. Are you sure?"))) {
+                                                        mdojo.ECRUD.deleteArrayOfIDs(tobedeleted).then(function (data) {
+                                                            mdojo.UI.showSuccess(_("Selected images were successfully deleted!"));
+                                                            registry.byId('imagesGrid').refresh();
+                                                            that.cancel();
+                                                        }).otherwise(function (err) {
+                                                            mdojo.UI.showError(err);
+                                                            that.cancel();
+                                                        });
+                                                    } else {
+                                                        that.cancel();
+                                                    }
+                                                }
+                                            }]
+                                    ]],
+                                ["aps/Grid", {
+                                        store: store,
+                                        id: "imagesGrid",
+                                        columns: [
+                                            {name: "", renderCell: function (row) {
+                                                    var checkbox = new CheckBox({
+                                                        onClick: function () {
+                                                            var newArray = [];
+                                                            for (var i = 0; i < tobedeleted.length; i++) {
+                                                                if (tobedeleted[i] !== row.aps.id) {
+                                                                    newArray.push(tobedeleted[i]);
+                                                                }
+                                                            }
+                                                            if (this.checked) {
+                                                                newArray.push(row.aps.id);
+                                                            }
+                                                            tobedeleted = newArray;
+
+                                                            status.set('deletedisabled', tobedeleted.length === 0);
+                                                        }
+                                                    });
+                                                    return checkbox;
+                                                }},
+                                            {name: "Name", field: "name"},
+                                            {name: "OS", field: "os"},
+                                            {name: "Image", field: "image"},
+                                            {name: "Usage", field: "usage"},
+                                            {name: "Status", renderCell: function (row) {
+                                                    var color = "red"; 
+                                                    if (row.isostatus === 'active') {
+                                                        color = "green";
+                                                    }
+                                                    return "<span style='color: " + color + "'>" + row.isostatus + "</span>";
+                                                }},
+                                            {name: "Actions", renderCell: function (row) {
+                                                    return new Button({
+                                                        label: _('Edit'),
+                                                        onClick: function () {
+                                                            mdojo.UI.showWarning(_("This section is under development"));
+                                                            this.cancel();
+//                                                            aps.apsc.gotoView('iso-edit');
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        ]
+                                    }]
+                            ]]
                     ]];
                 load(view);
             });</script>
