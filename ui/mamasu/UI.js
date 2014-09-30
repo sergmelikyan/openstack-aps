@@ -4,7 +4,11 @@ define([
     "mamasu/Settings.js"
 ], function (registry, Message, settings) {
     function safe_tags_replage(str) {
-        return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        if (typeof str === 'string') {
+            return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        } else {
+            return str;
+        }
     }
     var UI = {
         _showMessage: function (message, typeMsg) {

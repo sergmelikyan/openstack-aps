@@ -15,14 +15,16 @@
                 "aps/CheckBox",
                 "aps/WizardData",
                 "mamasu/mamadojo.js",
+//                "mamasu/Widgets/Tabs.js",
                 "aps/ready!"
-            ], function (load, registry, Deferred, all, Container, at, Switch, Button, CheckBox, WizardData, mdojo) {
+            ], function (load, registry, Deferred, all, Container, at, Switch, Button, CheckBox, WizardData, mdojo, Widget) {
                 "use strict";
                 function canBeDeleted(dcApsId) {
                     var def = new Deferred();
                     mdojo.ECRUD.get(dcApsId + "/canbedeleted").then(def.resolve).otherwise(def.reject);
                     return def;
                 }
+
                 var tobedeleted = [];
                 load(["aps/PageContainer", {id: 'main_page'}, [
                         ["aps/FieldSet", {
@@ -150,5 +152,6 @@
             });</script>
     </head>
     <body>
+        <!--<span data-dojo-type=""></span>-->
     </body>
 </html>

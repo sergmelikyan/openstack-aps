@@ -6,6 +6,7 @@
         <script>require([
                 "aps/load",
                 "aps/ResourceStore",
+                "dijit/registry",
                 "dojox/mvc/at",
                 "dojox/mvc/getStateful",
                 "dojox/mvc/getPlainValue",
@@ -13,7 +14,7 @@
                 "aps/Button",
                 "mamasu/mamadojo.js",
                 "aps/ready!"
-            ], function (load, ResourceStore, at, getStateful, getPlainValue, WizardData, Button, mdojo) {
+            ], function (load, ResourceStore, registry, at, getStateful, getPlainValue, WizardData, Button, mdojo) {
                 "use strict";
 
                 var data = WizardData.get();
@@ -21,6 +22,10 @@
 
                 var ippools = new ResourceStore({
                     target: "/aps/2/resources/" + dc.aps.id + "/ippool"
+                });
+                
+                mdojo.ECRUD.get(dc.aps.id+"/updatedatacenter").then(function(){
+                    registry.byId('gridId').refresh();
                 });
 
                 var view = ["aps/PageContainer", [

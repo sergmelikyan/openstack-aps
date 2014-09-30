@@ -7,7 +7,7 @@
   <internalTypes id="http://openstack.parallels.com/organization" version="1.0" relations="//@relations.12/@source //@relations.1/@target //@relations.9/@target //@relations.13/@source //@relations.14/@source //@relations.15/@source" name="organization">
     <implements>http://aps-standard.org/types/core/resource/1.0</implements>
   </internalTypes>
-  <internalTypes id="http://openstack.parallels.com/dc" version="1.6" relations="//@relations.0/@source //@relations.1/@source //@relations.2/@source //@relations.3/@source //@relations.4/@source" name="dc">
+  <internalTypes id="http://openstack.parallels.com/dc" version="1.7" relations="//@relations.0/@source //@relations.1/@source //@relations.2/@source //@relations.3/@source //@relations.4/@source" name="dc">
     <implements>http://aps-standard.org/types/core/resource/1.0</implements>
     <properties name="apiurl" type="string"/>
     <properties name="name" type="string"/>
@@ -20,12 +20,21 @@
     <properties name="numippools" type="integer"/>
     <operations name="onDCavailable" verb="POST"/>
     <operations name="updateDatacenter" verb="GET"/>
+    <operations name="listImages" verb="GET"/>
   </internalTypes>
   <internalTypes id="http://openstack.parallels.com/profile" version="1.0" relations="//@relations.2/@target //@relations.8/@source" name="profile">
     <implements>http://aps-standard.org/types/core/resource/1.0</implements>
   </internalTypes>
-  <internalTypes id="http://openstack.parallels.com/image" version="1.0" relations="//@relations.7/@source //@relations.3/@target" name="image">
+  <internalTypes id="http://openstack.parallels.com/image" version="1.4" relations="//@relations.3/@target //@relations.7/@source" name="image">
     <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+    <properties name="id" type="string"/>
+    <properties name="name" type="string"/>
+    <properties name="os" type="string"/>
+    <properties name="image" type="string"/>
+    <properties name="usage" type="string"/>
+    <properties name="isostatus" type="string"/>
+    <properties name="status" type="string"/>
+    <operations name="updateImage" verb="PUT"/>
   </internalTypes>
   <internalTypes id="http://openstack.parallels.com/ippool" version="1.2" relations="//@relations.5/@target //@relations.4/@target //@relations.11/@source //@relations.16/@target" name="ippool">
     <implements>http://aps-standard.org/types/core/resource/1.0</implements>

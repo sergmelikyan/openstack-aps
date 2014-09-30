@@ -4,98 +4,111 @@
         <meta content="text/html; charset=UTF-8" http-equiv="content-type">
         <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
         <script>require([
-                "aps/load",
-                "aps/Output",
-                "aps/Memory",
-                "dojox/mvc/at",
-                "aps/Switch",
-                "aps/ready!",
-                "aps/Button",
-                "aps/CheckBox"
-            ], function(load, Output, Memory, at, Switch, ready, Button, CheckBox) {
+                    "aps/load",
+                    "aps/Output",
+                    "aps/Memory",
+                    "aps/Switch",
+                    "aps/Button",
+                    "aps/CheckBox",
+                    "aps/WizardData",
+                    "mamasu/mamadojo.js",
+                    "dojox/mvc/getPlainValue",
+                    "dojox/mvc/at",
+                    "dojox/mvc/getStateful",
+                    "aps/ready!"
+            ], function (load, Output, Memory, Switch, Button, CheckBox, WizardData, mdojo, getPlainValue, at, getStateful) {
                 "use strict";
 
-                var data = [{
-                        aps: {
-                            id: "1"
-                        },
-                        info: {
-                            name: "Image 1",
-                            os: "CentOS 6.6"
-                        }
-                    }];
-
-                data = {
+                var data = WizardData.get();
+                var dc = data.dc;
+                var newIso = getStateful({
                     aps: {
-                        id: 1
+                        type: mdojo.Types.image
                     },
-                    info: {
-                        name: "Image 1",
-                        os: "CentOS 6.6"
+                    id: "",
+                    name: "",
+                    os: ""
+                });
+                mdojo.ECRUD.read(dc.aps.id + "/listimages").then(function (images) {
+                    var imageOptions = [];
+                    for (var i = 0; i < images.length; i++) {
+                        imageOptions.push({
+                            label: images[i].name,
+                            value: images[i].id,
+                            selected: i === 0
+                        });
+                        newIso.id = images[i].id;
                     }
-                }
 
-                var view = ["aps/PageContainer", [
-                        ["aps/Container", [
-                                ['<h1>', {innerHTML: "Data Center 1"}],
-                                ["<div>", {
-                                        class: "tabs"
-                                    }, [
-                                        ["<div>", {
-                                                class: "tabs-area"
-                                            }, [
-                                                ["<ul>", [
-                                                        ["<li>", {id: "first-tab"}, [
-                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);", onclick: function() {
-                                                                            aps.apsc.gotoView('ippool');
-                                                                        }}, [
-                                                                        ["<span>", {innerHTML: _("Settings")}]
-                                                                    ]]
-                                                            ]],
-                                                        ["<li>", {}, [
-                                                                ["<a>", {href: "javascript:void(0);", onclick: function() {
-                                                                            aps.apsc.gotoView('ippool');
-                                                                        }}, [
-                                                                        ["<span>", {innerHTML: _("Ippools")}]
-                                                                    ]]
-                                                            ]],
-                                                        ["<li>", {id: "last-tab", class: "active"}, [
-                                                                ["<a>", {href: "javascript:void(0);"}, [
-                                                                        ["<span>", {innerHTML: _("ISO")}]
-                                                                    ]]
-                                                            ]]
-                                                    ]]
-                                            ]]
-                                    ]],
-                                ["<h2>", {
-                                        innerHTML: "Register new ISO"
-                                    }],
-                                ["aps/FieldSet", {title: "ISO Settings"}, [
-                                        ["aps/TextBox", {
-                                                label: "ISO name",
-                                                id: "iso_name",
-                                                description: "ISO name",
-                                                value: data.info.name
-                                            }],
-                                        ["aps/Select", {
-                                                label: "Open Stack ISO",
-                                                options: [
-                                                    {label: "Image 1", value: 1, selected: false},
-                                                    {label: "Image 2", value: 2, selected: false},
-                                                    {label: "Image 3", value: 3, selected: true}
-                                                ]
-                                            }]
-                                    ]],
-                                ["aps/Button", {
-                                        id: "save",
-                                        title: _("Save"),
-                                        onClick: function() {
-                                            aps.apsc.gotoView('iso');
-                                        }
-                                    }]
-                            ]]
-                    ]];
-                load(view);
+                    var view = ["aps/PageContainer", {id: "main_page"}, [
+                            ["aps/Container", [
+                                    ['<h1>', {innerHTML: dc.name}],
+                                    ["<div>", {
+                                            class: "tabs"
+                                        }, [
+                                            ["<div>", {
+                                                    class: "tabs-area"
+                                                }, [
+                                                    ["<ul>", [
+                                                            ["<li>", {id: "first-tab"}, [
+                                                                    ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                aps.apsc.gotoView('ippool');
+                                                                            }}, [
+                                                                            ["<span>", {innerHTML: _("Settings")}]
+                                                                        ]]
+                                                                ]],
+                                                            ["<li>", {}, [
+                                                                    ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                aps.apsc.gotoView('ippool');
+                                                                            }}, [
+                                                                            ["<span>", {innerHTML: _("Ippools")}]
+                                                                        ]]
+                                                                ]],
+                                                            ["<li>", {id: "last-tab", class: "active"}, [
+                                                                    ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
+                                                                            ["<span>", {innerHTML: _("ISO")}]
+                                                                        ]]
+                                                                ]]
+                                                        ]]
+                                                ]]
+                                        ]],
+                                    ["<h2>", {
+                                            innerHTML: _("Register new ISO")
+                                        }],
+                                    ["aps/FieldSet", {title: _("ISO Settings")}, [
+                                            ["aps/TextBox", {
+                                                    label: _("ISO name"),
+                                                    value: at(newIso, 'name')
+                                                }],
+                                            ["aps/TextBox", {
+                                                    label: _("OS"),
+                                                    value: at(newIso, 'os')
+                                                }],
+                                            ["aps/Select", {
+                                                    label: _("Open Stack ISO"),
+                                                    options: imageOptions,
+                                                    value: at(newIso, 'id')
+                                                }]
+                                        ]],
+                                    ["aps/Button", {
+                                            id: "save",
+                                            title: _("Save"),
+                                            onClick: function () {
+                                                var that = this;
+                                                mdojo.ECRUD.create(getPlainValue(newIso), dc.aps.id + "/image").then(function (data) {
+                                                    mdojo.UI.showSuccess(_("Image was successfully created!"));
+                                                    aps.apsc.gotoView('iso');
+                                                    that.cancel();
+                                                }).otherwise(function (err) {
+                                                    mdojo.UI.showError(err);
+                                                    that.cancel();
+                                                });
+                                            }
+                                        }]
+                                ]]
+                        ]];
+                    load(view);
+                });
             });</script>
     </head>
     <body>

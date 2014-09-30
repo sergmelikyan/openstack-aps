@@ -115,6 +115,14 @@
                                                 }
                                             }],
                                         ["aps/TextBox", {
+                                                label: _("TenantID"),
+                                                hint: _("Tenant ID of provider in Data Center"),
+                                                value: at(dc, 'api_tenant_id'),
+                                                onChange: function () {
+                                                    changeTestStatus('pending');
+                                                }
+                                            }],
+                                        ["aps/TextBox", {
                                                 label: _("Proxy"),
                                                 onChange: function () {
                                                     changeTestStatus('pending');

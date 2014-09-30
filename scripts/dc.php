@@ -5,7 +5,7 @@ require "common.php";
 /**
  * Class DC
  * @author("The Mamasu Agency")
- * @type("http://openstack.parallels.com/dc/1.6")
+ * @type("http://openstack.parallels.com/dc/1.7")
  * @implements("http://aps-standard.org/types/core/resource/1.0")
  */
 class dc extends \APS\ResourceBase {
@@ -134,7 +134,7 @@ class dc extends \APS\ResourceBase {
      * @return(string, text/json)
      */
     public function updateDatacenter() {
-        logme("updateDatacenter => " . print_r($this, true));
+        logme("updateDatacenter", $this);
         $this->synchIpPools();
         return json_encode($this);
     }
@@ -201,6 +201,29 @@ class dc extends \APS\ResourceBase {
         $finalIpPools = json_decode($apsc->getIo()->sendRequest(\APS\Proto::GET, "/aps/2/resources/" . $dc->aps->id . "/ippool"));
         $this->numippools = count($finalIpPools);
         $apsc->updateResource($this);
+    }
+
+    /**
+     * @verb(GET)
+     * @path("/listimages")
+     * @return(string, text/json)
+     */
+    public function listImages() {
+        logme("ListImages");
+        $os = new OS($this->apiurl, $this->user, $this->password);
+        try {
+            $images = $os->listImages();
+            logme("IMAGES", $images);
+            $publicImages = array();
+            foreach ($images->images as $image) {
+                if (($image->visibility == "public") && ($image->status == "active")) {
+                    $publicImages[] = $image;
+                }
+            }
+            return json_encode($publicImages);
+        } catch (Exception $e) {
+            return json_encode($e);
+        }
     }
 
 }

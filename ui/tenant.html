@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                "aps/load",
+                "dijit/registry",
+                "dojo/Deferred",
+                "dojo/promise/all",
+                "aps/Container",
+                "dojox/mvc/at",
+                "aps/Switch",
+                "aps/Button",
+                "aps/CheckBox",
+                "aps/WizardData",
+                "mamasu/mamadojo.js",
+                "aps/ResourceStore",
+                "dojo/when",
+                "aps/ready!"
+            ], function (load, registry, Deferred, all, Container, at, Switch, Button, CheckBox, WizardData, mdojo, Store, when) {
+                "use strict";
+                
+                
+                var store = new Store({
+                    target: "/aps/2/resources/"
+                });
+
+                when(store.get(aps.context.vars.tenant.aps.id), function(tenant) {
+                    when(store.get(tenant.dc.aps.id), function(dc) {
+                        dc.apiurl+=':9080/dashboard/auth/login/'
+                        load(["aps/PageContainer", {id: 'main_page'}, [
+                        ["aps/FieldSet", {
+                                title: "Profile Details: "
+                            }],
+                        ["<div>",{innerHTML: "<table style='width: 600px;'>\n\
+<tr><td>Project Name</td><td>"+tenant.name+"</td>\n\
+<tr><td>Email</td><td>"+ tenant.email +"</td></tr>\n\
+<tr><td colspan=2>&nbsp;</td></tr>\n\
+<tr><td colspan=2><strong>RESOURCES</strong></td></tr>\n\
+<tr><td colspan=2>&nbsp;</td></tr>\n\
+<tr><td>CPUs</td><td>"+ tenant.cpu_counter.limit +"</td></tr>\n\
+</tr><tr><td>Memory</td><td>"+ tenant.memory_counter.limit +" MB</td></tr>\n\
+<tr><td>Disk Space</td><td>"+ tenant.disk_size_counter.limit +" GB</td></tr>\n\
+<tr><td>Traffic Out</td><td>"+ tenant.traffic_out_counter.limit +" KB</td></tr>\n\
+<tr><td>IPs</td><td>"+ tenant.ips_counter.limit +"</td></tr>\n\
+<tr><td colspan=2>&nbsp;</td></tr>\n\
+<tr><td colspan=2><strong>ACCESS</strong></td></tr>\n\
+<tr><td colspan=2>&nbsp;</td></tr>\n\
+<tr><td width=33%>URL</td><td><a href='"+dc.apiurl+"' target='_blank'>"+dc.apiurl+"</a></td>\n\
+<tr><td>Login</td><td>"+tenant.username+"</td>\n\
+<tr><td>Password</td><td>"+tenant.password+"</td>\n\
+</table>"}]
+                    ]]);
+                });
+            });
+        });
+    </script>
+    </head>
+    <body>
+    </body>
+</html>

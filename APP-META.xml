@@ -2,7 +2,7 @@
     <id>http://openstack.parallels.trn</id>
     <name>Openstack</name>
     <version>1.0</version>
-    <release>18</release>
+    <release>22</release>
     <homepage>http://dev.apsstandard.org/doc/poa/pa-sample-integration/starter.html</homepage>
     <vendor>
     	<name>OpenStack</name>
