@@ -68,8 +68,10 @@ class image extends \APS\ResourceBase {
         $dc = $apsc->getResource($this->dc->aps->id);
 
         $os = new OS($dc->apiurl, $dc->user, $dc->password);
+        
         $image = $os->getImageDetails($this->id);
 
+        
         $this->image = $image->file;
         $this->usage = 0;
         $this->isostatus = $image->status;

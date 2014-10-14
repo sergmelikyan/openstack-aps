@@ -5,7 +5,7 @@ require "common.php";
 /**
  * Class DC
  * @author("The Mamasu Agency")
- * @type("http://openstack.parallels.com/dc/1.7")
+ * @type("http://openstack.parallels.com/dc/1.8")
  * @implements("http://aps-standard.org/types/core/resource/1.0")
  */
 class dc extends \APS\ResourceBase {
@@ -35,6 +35,8 @@ class dc extends \APS\ResourceBase {
      * @link("http://openstack.parallels.com/ippool[]")
      */
     public $ippool;
+    
+
 
     /**
      * @type("string")
@@ -69,6 +71,12 @@ class dc extends \APS\ResourceBase {
     public $proxy;
 
     /**
+     * @type("string")
+     * @title("API Tenant ID")
+     */
+    public $api_tenant_id;
+
+    /**
      * @type("integer")
      * @title("Num Organizations")
      */
@@ -91,6 +99,8 @@ class dc extends \APS\ResourceBase {
      * @title("Num IPPools")
      */
     public $numippools = 0;
+    
+
 
     public function provision() {
         logme("provision");
@@ -224,6 +234,54 @@ class dc extends \APS\ResourceBase {
         } catch (Exception $e) {
             return json_encode($e);
         }
+    }
+    
+    function profileLink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numprofiles = $this->numprofiles + 1;
+    	$apsc->updateResource($this);
+    }
+    
+    function profileUnlink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numprofiles = $this->numprofiles - 1;
+    	$apsc->updateResource($this);
+    }
+    
+    function imageLink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numimages = $this->numimages + 1;
+    	$apsc->updateResource($this);
+    }
+    
+    function imageUnlink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numimages = $this->numimages - 1;
+    	$apsc->updateResource($this);
+    }
+    
+    function ippoolLink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numippools = $this->numippools + 1;
+    	$apsc->updateResource($this);
+    }
+    
+    function ippoolUnlink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numippools = $this->numippools - 1;
+    	$apsc->updateResource($this);
+    }
+    
+    function organizationLink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numorganizations = $this->numorganizations + 1;
+    	$apsc->updateResource($this);
+    }
+    
+    function organizationUnlink(){
+    	$apsc = \APS\Request::getController();
+    	$this->numorganizations = $this->numorganizations - 1;
+    	$apsc->updateResource($this);
     }
 
 }
