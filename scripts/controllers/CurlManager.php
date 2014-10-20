@@ -31,10 +31,8 @@ class CurlManager {
         curl_setopt($ch, CURLOPT_VERBOSE, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,40);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 40);
-        
+
+  
         if (count($post) > 0) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post));
         }
@@ -75,7 +73,9 @@ class CurlManager {
         $debugText .= "<-- end result-><br>";
         
         
-
+		if($info['http_code'] != 200 or !$result){
+			throw new Exception("http_code : " . $info['http_code']);
+		}
         
         
         fputs($file, $debugText);

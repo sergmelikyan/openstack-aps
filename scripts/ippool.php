@@ -21,7 +21,7 @@ class allocation_pools {
 /**
  * Class IPPool
  * @author("The Mamau Agency")
- * @type("http://openstack.parallels.com/ippool/1.2")
+ * @type("http://openstack.parallels.com/ippool/1.3")
  * @implements("http://aps-standard.org/types/core/resource/1.0")
  */
 class ippool extends \APS\ResourceBase {
@@ -54,6 +54,12 @@ class ippool extends \APS\ResourceBase {
      * @title("cidr")
      */
     public $cidr;
+    
+    /**
+     * @type("string")
+     * @title("OS status")
+     */
+    public $os_status = "enabled";
 
     /**
      * @type("allocation_pools[]")

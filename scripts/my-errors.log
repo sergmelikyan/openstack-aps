@@ -3910,3 +3910,191 @@ New configure
 New configure
 New configure
 New configure
+exception exception 'Exception' with message 'Undefined property: stdClass::$password at /var/www/html/openstack/organization.php:293' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(293): APS\apsErrorHandler(8, 'Undefined prope...', '/var/www/html/o...', 293, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Undefined property: stdClass::$password at /var/www/html/openstack/organization.php:295' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(295): APS\apsErrorHandler(8, 'Undefined prope...', '/var/www/html/o...', 295, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Object of class stdClass could not be converted to string at /var/www/html/openstack/organization.php:296' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(296): APS\apsErrorHandler(4096, 'Object of class...', '/var/www/html/o...', 296, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Object of class stdClass could not be converted to string at /var/www/html/openstack/organization.php:301' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(301): APS\apsErrorHandler(4096, 'Object of class...', '/var/www/html/o...', 301, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Undefined variable: i at /var/www/html/openstack/organization.php:299' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(299): APS\apsErrorHandler(8, 'Undefined varia...', '/var/www/html/o...', 299, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Undefined variable: organization at /var/www/html/openstack/organization.php:297' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(297): APS\apsErrorHandler(8, 'Undefined varia...', '/var/www/html/o...', 297, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Undefined variable: organization at /var/www/html/openstack/organization.php:297' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(297): APS\apsErrorHandler(8, 'Undefined varia...', '/var/www/html/o...', 297, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Undefined property: stdClass::$password at /var/www/html/openstack/organization.php:302' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(302): APS\apsErrorHandler(8, 'Undefined prope...', '/var/www/html/o...', 302, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Object of class stdClass could not be converted to string at /var/www/html/openstack/organization.php:301' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(301): APS\apsErrorHandler(4096, 'Object of class...', '/var/www/html/o...', 301, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Previous password not found' in /var/www/html/openstack/organization.php:299
+Stack trace:
+#0 [internal function]: organization->provision()
+#1 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#2 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#3 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#4 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#5 [internal function]: APS\Loader->__destruct()
+#6 {main}
+exception exception 'Exception' with message 'Trying to get property of non-object at /var/www/html/openstack/organization.php:295' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(295): APS\apsErrorHandler(8, 'Trying to get p...', '/var/www/html/o...', 295, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Undefined index: password at /var/www/html/openstack/organization.php:293' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(293): APS\apsErrorHandler(8, 'Undefined index...', '/var/www/html/o...', 293, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Trying to get property of non-object at /var/www/html/openstack/organization.php:294' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(294): APS\apsErrorHandler(8, 'Trying to get p...', '/var/www/html/o...', 294, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Trying to get property of non-object at /var/www/html/openstack/organization.php:294' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(294): APS\apsErrorHandler(8, 'Trying to get p...', '/var/www/html/o...', 294, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Trying to get property of non-object at /var/www/html/openstack/organization.php:296' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(296): APS\apsErrorHandler(8, 'Trying to get p...', '/var/www/html/o...', 296, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Trying to get property of non-object at /var/www/html/openstack/organization.php:296' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(296): APS\apsErrorHandler(8, 'Trying to get p...', '/var/www/html/o...', 296, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Password viejo = Cav0Y8%z@H' in /var/www/html/openstack/organization.php:301
+Stack trace:
+#0 [internal function]: organization->provision()
+#1 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#2 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#3 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#4 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#5 [internal function]: APS\Loader->__destruct()
+#6 {main}
+exception exception 'Exception' with message 'Undefined variable: Tenant at /var/www/html/openstack/organization.php:269' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(269): APS\apsErrorHandler(8, 'Undefined varia...', '/var/www/html/o...', 269, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}
+exception exception 'Exception' with message 'Undefined variable: Tenant at /var/www/html/openstack/organization.php:269' in /usr/share/aps/php/aps/2/runtime.php:51
+Stack trace:
+#0 /var/www/html/openstack/organization.php(269): APS\apsErrorHandler(8, 'Undefined varia...', '/var/www/html/o...', 269, Array)
+#1 [internal function]: organization->provision()
+#2 /usr/share/aps/php/aps/2/rest.php(699): call_user_func_array(Array, Array)
+#3 /usr/share/aps/php/aps/2/runtime.php(240): Rest\RestService->handle()
+#4 /usr/share/aps/php/aps/2/runtime.php(312): APS\Loader->handleHttpRequest()
+#5 /usr/share/aps/php/aps/2/runtime.php(324): APS\Loader->process()
+#6 [internal function]: APS\Loader->__destruct()
+#7 {main}

@@ -2,10 +2,80 @@
 
 require "common.php";
 
+
+class os_metric {
+	
+	/**
+	* @type("string")
+	* @title("Measure")
+	*/
+	public $measure;
+	/**
+	* @type("string")
+	* @title("value")
+	*/
+	public $value;
+	
+	public function __construct($measure, $value){
+		$this->measure = $measure;
+		$this->value = $value;
+	}
+}
+
+class statistics_historic{
+	/**
+	 * @type("string")
+	 * @title("Date")
+	 */
+	public $date;
+	
+	/**
+	 * @type("os_metric")
+	 * @title("Cpu")
+	 */
+	public $cpu;
+	
+	/**
+	 * @type("os_metric")
+	 * @title("Memory")
+	 */
+	public $memory;
+	
+	/**
+	 * @type("os_metric")
+	 * @title("Disk Size")
+	 */
+	public $disk_size;
+	
+	/**
+	 * @type("os_metric")
+	 * @title("IPs")
+	 */
+	public $ips;
+	
+	/**
+	 * @type("os_metric")
+	 * @title("Traffic Out")
+	 */
+	public $traffic_out;
+	
+	
+
+	public function __construct($cpu, $memory, $disk_size, $ips, $traffic_out){
+		$this->cpu = $cpu;
+		$this->memory = $memory;
+		$this->disk_size = $disk_size;
+		$this->ips = $ips;
+		$this->traffic_out = $traffic_out;
+		$this->date = strtotime("now");
+	}
+}
+
+
 /**
  * Class Organization
  * @author("The Mamasu Agency")
- * @type("http://openstack.parallels.com/organization/1.1")
+ * @type("http://openstack.parallels.com/organization/1.3")
  * @implements("http://aps-standard.org/types/core/resource/1.0")
  */
 class organization extends \APS\ResourceBase {
@@ -165,51 +235,107 @@ class organization extends \APS\ResourceBase {
      * @title("email")
      */
     public $email;
-
+    
+    /**
+     * @type("statistics_historic[]")
+     * @title("Statistics Historic")
+     */
+    public $statistics_historic;
+    
+    
     public function retrieve() {
+    	
         $apsc = \APS\Request::getController();
         $dc = $apsc->getResource($this->dc->aps->id);
-        
-        error_log("Despues de dc");
         $os = new OS($dc->apiurl, $dc->user, $dc->password);
-
-        error_log("Despues de OS");
+        
+        
+        
+        error_log("----------Entering retrieve---------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
         
         
         $query = array();
-        $query[] = array("field" => "project_id", "op" => "eq", "value" => $this->tenant_id);
+        $query[] = array("field" => "timestamp", "op" => "ge", "value" => date("Y-m-d\T00:00:00", strtotime("yesterday")));
+        $query[] = array("field" => "timestamp", "op" => "lt", "value" => date("Y-m-d\T00:00:00", strtotime("today")));
+        $query[] = array(
+        		"field" => "project_id",
+        		"op" => "eq",
+        		"value" => $this->tenant_id
+        );
         
+     
         
-        error_log("Despues de dc".json_encode($query));
-        
- 
-        /*if($this->cpu_counter->limit > $this->cpu_usage->usage){
-            $this->cpu_usage->usage = 1;
-        }
-        
-        if($this->memory_counter->limit > $this->memory_usage->usage){
-            $this->memory_usage->usage = 1;
-        }
-        
-        if($this->disk_size_counter->limit > $this->disk_size_usage->usage){
-            $this->disk_size_usage->usage = 1;
-        }
-        
-        if($this->ips_counter->limit > $this->ips_usage->usage){
-            $this->ips_usage->usage = 1;
-        }
-        
-        if($this->traffic_out_counter->limit > $this->ips_usage->usage){
-            $this->traffic_out_usage->usage = 10;
-        }*/
+        if($this->tenant_id != null and $os->checkProjectExits($this->tenant_id)){
+	        /*
+	         * Check if it is a Flat or a PAYG subscription
+	         */
+        	error_log("----------NEW PROJECT ".$this->tenant_id."---------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        if($this->cpu_counter->limit == -1 AND $this->memory_counter->limit == -1 
+	        		AND $this->disk_size_counter->limit == -1 AND $this->ips_counter->limit == -1 
+	        		AND $this->traffic_out_counter->limit == -1){
+	        	/*
+	        	 * PAYG
+	        	 */
 
-        $this->cpu_usage->usage = $os->getMeterStatistics("vcpus", $query, array("project_id"), null);
-        $this->memory_usage->usage = $os->getMeterStatistics("memory", $query, array("project_id"), null);
-        $this->disk_size_usage->usage = $os->getMeterStatistics('disk.root.size', $query, array("project_id"), null);
-        $this->ips_usage->usage = $os->getMeterStatistics('ip.floating', $query, array("project_id"), null);
-        $this->traffic_out_usage->usage = $os->getMeterStatistics('network.outgoing.bytes', $query, array("project_id"), null);
-        
-        
+	        	$this->cpu_usage->usage += intval($os->getMeterStatistics("vcpus", $query, array("resource_id"), null));
+	        	$this->memory_usage->usage += intval($os->getMeterStatistics("memory", $query, array("resource_id"), null));
+	        	$this->disk_size_usage->usage += intval($os->getMeterStatistics('disk.root.size', $query, array("resource_id"), null));
+	        	$this->ips_usage->usage += intval($os->getMeterStatistics('ip.floating', $query, array("resource_id"), null));
+	        	$this->traffic_out_usage->usage += intval($os->getMeterStatistics('network.outgoing.bytes', $query, array("resource_id"), null));
+	        	
+	        	error_log("---------------PAYG----------------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("----------".$this->tenant_id."---------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+				error_log("CPU usage = ". $this->cpu_usage->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+				error_log("Memory usage = ". $this->memory_usage->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+				error_log("Disk size usage = ". $this->disk_size_usage->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+				error_log("Ips usage = ". $this->ips_usage->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+				error_log("Traffic out usage = ". $this->traffic_out_usage->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("-------------------------------------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	
+	        	
+	        	
+	        	
+	        	$cpu = new os_metric("vcpus",$this->cpu_usage->usage);
+	        	$memory = new os_metric("memory",$this->memory_usage->usage);
+	        	$disk_size = new os_metric("disk.root.size",$this->disk_size_usage->usage);
+	        	$ips = new os_metric("ip.floating",$this->ips_usage->usage);
+	        	$traffic_out = new os_metric("network.outgoing.bytes", $this->traffic_out_usage->usage);
+	        	$this->statistics_historic[] = new statistics_historic($cpu, $memory, $disk_size, $ips, $traffic_out);
+	        	
+
+	        }else{
+	        	
+	        	
+	        	/*
+	        	 * Flat
+	        	 */
+	        	
+	        	$this->cpu_counter->usage = intval($os->getMeterStatistics("vcpus", $query, array("resource_id"), null));
+	        	$this->memory_counter->usage = intval($os->getMeterStatistics("memory", $query, array("resource_id"), null));
+	        	$this->disk_size_counter->usage = intval($os->getMeterStatistics('disk.root.size', $query, array("resource_id"), null));
+	        	$this->ips_counter->usage = intval($os->getMeterStatistics('ip.floating', $query, array("resource_id"), null));
+	        	$this->traffic_out_counter->usage = intval($os->getMeterStatistics('network.outgoing.bytes', $query, array("resource_id"), null));
+	        	
+	        	error_log("---------------FLAT----------------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("----------".$this->tenant_id."---------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("CPU usage = ". $this->cpu_counter->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("Memory usage = ". $this->memory_counter->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("Disk size usage = ". $this->disk_size_counter->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("Ips usage = ". $this->ips_counter->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("Traffic out usage = ". $this->traffic_out_counter->usage."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	error_log("-------------------------------------"."\r\n", 3, '/var/www/html/openstack/controllers/retrieve.txt');
+	        	
+	        	
+	        	
+				$cpu = new os_metric("vcpus",$this->cpu_counter->usage);
+	        	$memory = new os_metric("memory",$this->memory_counter->usage);
+	        	$disk_size = new os_metric("disk.root.size",$this->disk_size_counter->usage);
+	        	$ips = new os_metric("ip.floating",$this->ips_counter->usage);
+	        	$traffic_out = new os_metric("network.outgoing.bytes", $this->traffic_out_counter->usage);
+	        	$this->statistics_historic[] = new statistics_historic($cpu, $memory, $disk_size, $ips, $traffic_out);
+	        	
+	        }
+        }
     }
 
     public function provision() {
@@ -220,8 +346,7 @@ class organization extends \APS\ResourceBase {
         $os = new OS($dc->apiurl, $dc->user, $dc->password);
 
         try {
-            date_default_timezone_set("Europe/Madrid");
-
+           
             /*
              * Roles :
              * 1. admin 19161422093d482fb6540bcecde60f89
@@ -237,43 +362,46 @@ class organization extends \APS\ResourceBase {
             $admins = json_decode($apscAccount->getIo()->sendRequest(\APS\Proto::GET, "/aps/2/resources/" . $this->account->aps->id . "/users?implementing(http://parallels.com/aps/types/pa/admin-user/1.0)"));
 
             if (!empty($admins)) {
-                $apscAdmin = clone $apscAccount; //->impersonate($this->app->aps->id);$apscAdmin->resetSession();
+                $apscAdmin = clone $apscAccount;
                 $admin = $apscAdmin->getResource($admins[0]->aps->id);
             }
 
+
+            $checkUserExists = $os->checkUserExists($admin->login);
+            
             $this->name = "Proj" . strtotime("now") . $admin->userId;
             $this->email = $admin->email;
             $this->username = $admin->login;
             $Tenant = $os->createTenant($this->name, "Tenant description " . $this->name, true);
             $this->tenant_id = $Tenant->tenant->id;
-
-
-            $checkUserExists = $os->checkUserExists($this->username);
             
             if (count($checkUserExists->users) > 0) {
-                
+
                 $User = $checkUserExists->users[0];
                 $uid = $User->id;
+                $organizations = json_decode($apscAccount->getIo()->sendRequest(\APS\Proto::GET, "/aps/2/resources/?implementing(http://openstack.parallels.com/organization)&eq(aps.status,aps:ready)"),true);
+				$this->password = $organizations[0]['password'];
+				if(!isset($organizations[0]['password'])) throw new Exception("Unable to find previous password");
+				
             } else {
-                
+            
                 $admin->password = \APS\generatePassword(10);
                 $this->password = $admin->password;
                 $User = $os->createUsers($Tenant->tenant->id, "Default user " . $Tenant->tenant->id, "default", $this->email, $this->username, $this->password);
                 $uid = $User->user->id;
             }
-
+            
             /*
-             * 
+             * IMPORTANTE
              * Save the administrator role, and the ROLES ID for member, adminitrator
-             * 
+             * IMPORTANTE
              */
             $Roles = $os->grantRoleToProjectUser($Tenant->tenant->id, $uid, 'f3ffbe27d94741e9baeada7086a3b159');
-            $Roles = $os->grantRoleToProjectUser($Tenant->tenant->id, 'fd1673ac1cb247baa18004e494db28e7', '19161422093d482fb6540bcecde60f89');
-
-            $os->updateQuotasStorage($dc->api_tenant_id, $this->tenant_id, array("gigabytes" => $this->disk_size_counter->limit));
-            $os->updateQuotasCompute($dc->api_tenant_id, $this->tenant_id, array('ram' => $this->memory_counter->limit, 'cores' => $this->cpu_counter->limit));
-            $os->updateQuotasNetwork($this->tenant_id, array('floatingip' => $this->ips_counter->limit));
+            $Roles = $os->grantRoleToProjectUser($Tenant->tenant->id, 'fd1673ac1cb247baa18004e494db28e7', '19161422093d482fb6540bcecde60f89');            
             
+            $os->updateQuotasStorage($this->tenant_id, array("gigabytes" => $this->disk_size_counter->limit));
+            $os->updateQuotasCompute($this->tenant_id, array('ram' => $this->memory_counter->limit, 'cores' => $this->cpu_counter->limit));
+            $os->updateQuotasNetwork($this->tenant_id, array('floatingip' => $this->ips_counter->limit));
             
         } catch (Exception $e) {
 
@@ -287,13 +415,9 @@ class organization extends \APS\ResourceBase {
         $apsc = clone \APS\Request::getController();
         $dc = $apsc->getResource($this->dc->aps->id);
         $os = new OS($dc->apiurl, $dc->user, $dc->password);
-        error_log(json_encode($this->disk_size_counter));
-        error_log("New configure\r\n", 3, "/var/www/html/openstack/my-errors.log");
-
-
         
-        $os->updateQuotasStorage($dc->api_tenant_id, $this->tenant_id, array("gigabytes" => $this->disk_size_counter->limit));
-        $os->updateQuotasCompute($dc->api_tenant_id, $this->tenant_id, array('ram' => $this->memory_counter->limit, 'cores' => $this->cpu_counter->limit));
+        $os->updateQuotasStorage($this->tenant_id, array("gigabytes" => $this->disk_size_counter->limit));
+        $os->updateQuotasCompute($this->tenant_id, array('ram' => $this->memory_counter->limit, 'cores' => $this->cpu_counter->limit));
         $os->updateQuotasNetwork($this->tenant_id, array('floatingips' => $this->ips_counter->limit));
     }
 
