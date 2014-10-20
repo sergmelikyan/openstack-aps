@@ -43,23 +43,31 @@
                     mdojo.ECRUD.get(aps.context.vars.application.aps.id + "/dcconnectiontest", getPlainValue(dc)).then(function (data) {
                         if (that !== undefined) {
                             that.cancel();
+                            console.log("hola4");
                         }
                         if (data.success) {
                             changeTestStatus('ok');
                             mdojo.UI.showSuccess(_("Correct configuration!"));
                             def.resolve({success: true});
                         } else {
+                        	
+                        	console.log("hola");
                             changeTestStatus('ko');
                             mdojo.UI.showError(data.responseData);
                             def.reject({success: false, responseData: data.responseData});
+                            that.cancel();
                         }
                     }).otherwise(function (err) {
                         if (that !== undefined) {
                             that.cancel();
                         }
+                       	var error_str = jQuery.parseJSON(err.response.text);
+
+                        mdojo.UI.showError(error_str.message);
+                        def.reject({success: false, responseData: error_str.message});
+                        def.resolve({success: false});
                         changeTestStatus('ko');
-                        mdojo.UI.showError(err);
-                        def.reject({success: false, responseData: data.responseData});
+                        
                     });
                     return def;
                 }
@@ -114,14 +122,7 @@
                                                     changeTestStatus('pending');
                                                 }
                                             }],
-                                        ["aps/TextBox", {
-                                                label: _("TenantID"),
-                                                hint: _("Tenant ID of provider in Data Center"),
-                                                value: at(dc, 'api_tenant_id'),
-                                                onChange: function () {
-                                                    changeTestStatus('pending');
-                                                }
-                                            }],
+
                                         ["aps/TextBox", {
                                                 label: _("Proxy"),
                                                 onChange: function () {
@@ -167,6 +168,7 @@
                                         label: "Save",
                                         onClick: function () {
                                             var that = this;
+                                            
                                             checkConnection().then(function () {
                                                 if ((dc.name === "") || (dc.apiurl === "") ||
                                                         (dc.user === "") || (dc.password === "")) {
@@ -184,6 +186,7 @@
                                                 }
                                             }).otherwise(function (err) {
                                                 mdojo.UI.showError(_("Changes cannot be saved") + ": " + err.responseData);
+                                                that.cancel();
                                             });
                                         }
                                     }],

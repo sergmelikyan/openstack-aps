@@ -21,7 +21,7 @@
                 var dc = getStateful(data.dc);
 
                 var ippools = new ResourceStore({
-                    target: "/aps/2/resources/" + dc.aps.id + "/ippool"
+                    target: "/aps/2/resources/" + dc.aps.id + "/ippool?eq(os_status,enabled)"
                 });
                 
                 mdojo.ECRUD.get(dc.aps.id+"/updatedatacenter").then(function(){
@@ -49,13 +49,27 @@
                                                                 ["<span>", {innerHTML: _("Ippools")}]
                                                             ]]
                                                     ]],
-                                                ["<li>", {id: "last-tab"}, [
+                                                ["<li>", {}, [
                                                         ["<a>", {href: "javascript:void(0);", onclick: function () {
                                                                     aps.apsc.gotoView('iso');
                                                                 }}, [
                                                                 ["<span>", {innerHTML: _("ISO")}]
                                                             ]]
-                                                    ]]
+                                                    ]],
+                                                    ["<li>", {}, [
+                                                                  ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                              aps.apsc.gotoView('statistics');
+                                                                          }}, [
+                                                                          ["<span>", {innerHTML: _("Statistics")}]
+                                                                      ]]
+                                                              ]],
+                                                              ["<li>", {id: "last-tab"}, [
+                                                                                          ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                                      aps.apsc.gotoView('synchronize');
+                                                                                                  }}, [
+                                                                                                  ["<span>", {innerHTML: _("Synchronize")}]
+                                                                                              ]]
+                                                                                      ]]
                                             ]]
                                     ]]
                             ]],

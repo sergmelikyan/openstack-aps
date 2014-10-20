@@ -30,7 +30,7 @@
                 var store = mdojo.ECRUD.simpleStoreByTarget(dc.aps.id + "/image");
                 var view = ["aps/PageContainer", {id: "main_page"}, [
                         ["aps/Container", [
-                                ['<h1>', {innerHTML: data.name}],
+                                ['<h1>', {innerHTML: dc.name}],
                                 ["<div>", {
                                         class: "tabs"
                                     }, [
@@ -52,11 +52,25 @@
                                                                         ["<span>", {innerHTML: _("Ippools")}]
                                                                     ]]
                                                             ]],
-                                                        ["<li>", {id: "last-tab", class: "active"}, [
+                                                        ["<li>", {class: "active"}, [
                                                                 ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
                                                                         ["<span>", {innerHTML: _("ISO")}]
                                                                     ]]
-                                                            ]]
+                                                            ]],["<li>", {}, [
+                                                                             ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                 aps.apsc.gotoView('statistics');
+                                                                             }}, [
+                                                                             ["<span>", {innerHTML: _("Statistics")}]
+                                                                         ]]
+                                                                 ]],
+                                                                
+                                                                 ["<li>", {id: "last-tab"}, [
+                                                                                             ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                                         aps.apsc.gotoView('synchronize');
+                                                                                                     }}, [
+                                                                                                     ["<span>", {innerHTML: _("Synchronize")}]
+                                                                                                 ]]
+                                                                                         ]]
                                                     ]]
                                             ]]
                                     ]],

@@ -52,7 +52,7 @@
                                                 ["<ul>", [
                                                         ["<li>", {id: "first-tab"}, [
                                                                 ["<a>", {href: "javascript:void(0);", onclick: function () {
-                                                                            aps.apsc.gotoView('ippool');
+                                                                            aps.apsc.gotoView('datacenter-view');
                                                                         }}, [
                                                                         ["<span>", {innerHTML: _("Settings")}]
                                                                     ]]
@@ -64,11 +64,25 @@
                                                                         ["<span>", {innerHTML: _("Ippools")}]
                                                                     ]]
                                                             ]],
-                                                        ["<li>", {id: "last-tab", class: "active"}, [
+                                                        ["<li>", {class: "active"}, [
                                                                 ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
                                                                         ["<span>", {innerHTML: _("ISO")}]
                                                                     ]]
-                                                            ]]
+                                                            ]],
+                                                            ["<li>", {}, [
+                                                                          ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                      aps.apsc.gotoView('statistics');
+                                                                                  }}, [
+                                                                                  ["<span>", {innerHTML: _("Statistics")}]
+                                                                              ]]
+                                                                      ]],
+                                                                      ["<li>", {id: "last-tab"}, [
+                                                                                                  ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                                              aps.apsc.gotoView('synchronize');
+                                                                                                          }}, [
+                                                                                                          ["<span>", {innerHTML: _("Synchronize")}]
+                                                                                                      ]]
+                                                                                              ]]
                                                     ]]
                                             ]]
                                     ]],

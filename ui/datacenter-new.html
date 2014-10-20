@@ -148,7 +148,8 @@
                                 label: _("Save"),
                                 onClick: function () {
                                     var that = this;
-                                    checkConnection(that).then(function () {
+                                    checkConnection(that).then(function (response) {
+                                    	console.log(response);
                                         object.set("name", object.name.trim());
                                         object.set("apiurl", object.apiurl.trim());
                                         object.set("user", object.user.trim());
@@ -170,7 +171,7 @@
                                         }
                                     }).otherwise(function (err) {
                                         mdojo.UI.log("ERROR", err);
-                                        mdojo.UI.showError(_("Unreachable connection"));// + ": " + err.responseData);
+                                        mdojo.UI.showError(_("Unreachable connection") + ": " + err.responseData);
                                     });
                                 }
                             }],

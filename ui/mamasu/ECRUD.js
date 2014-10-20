@@ -65,6 +65,7 @@ define([
             return def;
         },
         get: function (target, data) {
+            data = data || "";
             return xhr.get("/aps/2/resources/" + target + "?data=" + base64.encode(JSON.stringify(data)));// + "/?data=" + encodeURI(JSON.stringify(data)));
         },
         put: function (target, data) {
