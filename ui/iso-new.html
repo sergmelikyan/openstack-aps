@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                    "aps/load",
+                    "aps/Output",
+                    "aps/Memory",
+                    "aps/Switch",
+                    "aps/Button",
+                    "aps/CheckBox",
+                    "aps/WizardData",
+                    "mamasu/mamadojo.js",
+                    "dojox/mvc/getPlainValue",
+                    "dojox/mvc/at",
+                    "dojox/mvc/getStateful",
+                    "aps/ready!"
+            ], function (load, Output, Memory, Switch, Button, CheckBox, WizardData, mdojo, getPlainValue, at, getStateful) {
+                "use strict";
+
+                var data = WizardData.get();
+                var dc = data.dc;
+                var newIso = getStateful({
+                    aps: {
+                        type: mdojo.Types.image
+                    },
+                    id: "",
+                    name: "",
+                    os: ""
+                });
+                mdojo.ECRUD.read(dc.aps.id + "/listimages").then(function (images) {
+                    var imageOptions = [];
+                    for (var i = 0; i < images.length; i++) {
+                        imageOptions.push({
+                            label: images[i].name,
+                            value: images[i].id,
+                            selected: i === 0
+                        });
+                        newIso.id = images[i].id;
+                    }
+
+                    var view = ["aps/PageContainer", {id: "main_page"}, [
+                            ["aps/Container", [
+                                    ['<h1>', {innerHTML: dc.name}],
+                                    ["<div>", {
+                                            class: "tabs"
+                                        }, [
+                                            ["<div>", {
+                                                    class: "tabs-area"
+                                                }, [
+                                                    ["<ul>", [
+                                                            ["<li>", {id: "first-tab"}, [
+                                                                    ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                aps.apsc.gotoView('datacenter-view');
+                                                                            }}, [
+                                                                            ["<span>", {innerHTML: _("Settings")}]
+                                                                        ]]
+                                                                ]],
+                                                            ["<li>", {}, [
+                                                                    ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                aps.apsc.gotoView('ippool');
+                                                                            }}, [
+                                                                            ["<span>", {innerHTML: _("Ippools")}]
+                                                                        ]]
+                                                                ]],
+                                                            ["<li>", {class: "active"}, [
+                                                                    ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
+                                                                            ["<span>", {innerHTML: _("ISO")}]
+                                                                        ]]
+                                                                ]],
+                                                                ["<li>", {}, [
+                                                                              ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                          aps.apsc.gotoView('statistics');
+                                                                                      }}, [
+                                                                                      ["<span>", {innerHTML: _("Statistics")}]
+                                                                                  ]]
+                                                                          ]],
+                                                                          
+                                                                          ["<li>", {id: "last-tab"}, [
+                                                                                                      ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                                                  aps.apsc.gotoView('synchronize');
+                                                                                                              }}, [
+                                                                                                              ["<span>", {innerHTML: _("Synchronize")}]
+                                                                                                          ]]
+                                                                                                  ]]
+                                                        ]]
+                                                ]]
+                                        ]],
+                                    ["<h2>", {
+                                            innerHTML: _("Register new ISO")
+                                        }],
+                                    ["aps/FieldSet", {title: _("ISO Settings")}, [
+                                            ["aps/TextBox", {
+                                                    label: _("ISO name"),
+                                                    value: at(newIso, 'name')
+                                                }],
+                                            ["aps/TextBox", {
+                                                    label: _("OS"),
+                                                    value: at(newIso, 'os')
+                                                }],
+                                            ["aps/Select", {
+                                                    label: _("Open Stack ISO"),
+                                                    options: imageOptions,
+                                                    value: at(newIso, 'id')
+                                                }]
+                                        ]],
+                                    ["aps/Button", {
+                                            id: "save",
+                                            title: _("Save"),
+                                            onClick: function () {
+                                                var that = this;
+                                                mdojo.ECRUD.create(getPlainValue(newIso), dc.aps.id + "/image").then(function (data) {
+                                                    mdojo.UI.showSuccess(_("Image was successfully created!"));
+                                                    aps.apsc.gotoView('iso');
+                                                    that.cancel();
+                                                }).otherwise(function (err) {
+                                                    mdojo.UI.showError(err);
+                                                    that.cancel();
+                                                });
+                                            }
+                                        }]
+                                ]]
+                        ]];
+                    load(view);
+                });
+            });</script>
+    </head>
+    <body>
+    </body>
+</html>

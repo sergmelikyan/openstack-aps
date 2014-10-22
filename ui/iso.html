@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                "aps/load",
+                "aps/Output",
+                "aps/Memory",
+                "dojo/promise/all",
+                "dojox/mvc/at",
+                "dojox/mvc/getStateful",
+                "aps/Switch",
+                "dijit/registry",
+                "aps/Button",
+                "aps/CheckBox",
+                "aps/WizardData",
+                "mamasu/mamadojo.js",
+                "aps/ready!"
+            ], function (load, Output, Memory, all, at, getStateful, Switch, registry, Button, CheckBox, WizardData, mdojo) {
+                "use strict";
+
+                var data = WizardData.get();
+                var dc = data.dc;
+                var tobedeleted = [];
+                var status = getStateful({
+                    deletedisabled: true
+                });
+
+                var store = mdojo.ECRUD.simpleStoreByTarget(dc.aps.id + "/image");
+                var view = ["aps/PageContainer", {id: "main_page"}, [
+                        ["aps/Container", [
+                                ['<h1>', {innerHTML: dc.name}],
+                                ["<div>", {
+                                        class: "tabs"
+                                    }, [
+                                        ["<div>", {
+                                                class: "tabs-area"
+                                            }, [
+                                                ["<ul>", [
+                                                        ["<li>", {id: "first-tab"}, [
+                                                                ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                            aps.apsc.gotoView('ippool');
+                                                                        }}, [
+                                                                        ["<span>", {innerHTML: _("Settings")}]
+                                                                    ]]
+                                                            ]],
+                                                        ["<li>", {}, [
+                                                                ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                            aps.apsc.gotoView('ippool');
+                                                                        }}, [
+                                                                        ["<span>", {innerHTML: _("Ippools")}]
+                                                                    ]]
+                                                            ]],
+                                                        ["<li>", {class: "active"}, [
+                                                                ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
+                                                                        ["<span>", {innerHTML: _("ISO")}]
+                                                                    ]]
+                                                            ]],["<li>", {}, [
+                                                                             ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                 aps.apsc.gotoView('statistics');
+                                                                             }}, [
+                                                                             ["<span>", {innerHTML: _("Statistics")}]
+                                                                         ]]
+                                                                 ]],
+                                                                
+                                                                 ["<li>", {id: "last-tab"}, [
+                                                                                             ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                                         aps.apsc.gotoView('synchronize');
+                                                                                                     }}, [
+                                                                                                     ["<span>", {innerHTML: _("Synchronize")}]
+                                                                                                 ]]
+                                                                                         ]]
+                                                    ]]
+                                            ]]
+                                    ]],
+                                ["aps/Container", {
+                                        title: "ISO Images"
+                                    }],
+                                ["aps/Toolbar",
+                                    [["aps/ToolbarButton", {
+                                                label: "Register New ISO Image",
+                                                iconClass: "sb-add",
+                                                onClick: function () {
+                                                    aps.apsc.gotoView('iso-new');
+                                                }
+                                            }],
+                                        ["aps/ToolbarButton", {
+                                                label: "Refresh",
+                                                iconClass: "sb-refresh",
+                                                onClick: function () {
+                                                    var that = this;
+                                                    store.query().then(function (images) {
+                                                        var promises = [];
+                                                        for (var i = 0; i < images.length; i++) {
+                                                            promises.push(mdojo.ECRUD.put(images[i].aps.id + "/updateimage", ""));
+                                                        }
+                                                        all(promises).then(function (data) {
+                                                            mdojo.UI.showSuccess(_("All images where refreshed."));
+                                                            registry.byId('imagesGrid').refresh();
+                                                            that.cancel();
+                                                        }).otherwise(function (err) {
+                                                            mdojo.UI.showError(err);
+                                                            that.cancel();
+                                                        });
+                                                    }).otherwise(function (err) {
+                                                        mdojo.UI.showError(err);
+                                                        that.cancel();
+                                                    });
+
+                                                }
+                                            }],
+                                        ["aps/ToolbarButton", {
+                                                label: "Delete",
+                                                iconClass: "sb-delete",
+                                                disabled: at(status, 'deletedisabled'),
+                                                onClick: function () {
+                                                    var that = this;
+                                                    if (confirm(_("Selected images will be removed. Are you sure?"))) {
+                                                        mdojo.ECRUD.deleteArrayOfIDs(tobedeleted).then(function (data) {
+                                                            mdojo.UI.showSuccess(_("Selected images were successfully deleted!"));
+                                                            registry.byId('imagesGrid').refresh();
+                                                            that.cancel();
+                                                        }).otherwise(function (err) {
+                                                            mdojo.UI.showError(err);
+                                                            that.cancel();
+                                                        });
+                                                    } else {
+                                                        that.cancel();
+                                                    }
+                                                }
+                                            }]
+                                    ]],
+                                ["aps/Grid", {
+                                        store: store,
+                                        id: "imagesGrid",
+                                        columns: [
+                                            {name: "", renderCell: function (row) {
+                                                    var checkbox = new CheckBox({
+                                                        onClick: function () {
+                                                            var newArray = [];
+                                                            for (var i = 0; i < tobedeleted.length; i++) {
+                                                                if (tobedeleted[i] !== row.aps.id) {
+                                                                    newArray.push(tobedeleted[i]);
+                                                                }
+                                                            }
+                                                            if (this.checked) {
+                                                                newArray.push(row.aps.id);
+                                                            }
+                                                            tobedeleted = newArray;
+
+                                                            status.set('deletedisabled', tobedeleted.length === 0);
+                                                        }
+                                                    });
+                                                    return checkbox;
+                                                }},
+                                            {name: "Name", field: "name"},
+                                            {name: "OS", field: "os"},
+                                            {name: "Image", field: "image"},
+                                            {name: "Usage", field: "usage"},
+                                            {name: "Status", renderCell: function (row) {
+                                                    var color = "red"; 
+                                                    if (row.isostatus === 'active') {
+                                                        color = "green";
+                                                    }
+                                                    return "<span style='color: " + color + "'>" + row.isostatus + "</span>";
+                                                }},
+                                            {name: "Actions", renderCell: function (row) {
+                                                    return new Button({
+                                                        label: _('Edit'),
+                                                        onClick: function () {
+                                                            mdojo.UI.showWarning(_("This section is under development"));
+                                                            this.cancel();
+//                                                            aps.apsc.gotoView('iso-edit');
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        ]
+                                    }]
+                            ]]
+                    ]];
+                load(view);
+            });</script>
+    </head>
+    <body>
+    </body>
+</html>

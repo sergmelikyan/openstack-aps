@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                "aps/load",
+                "dijit/registry",
+                "dojo/Deferred",
+                "dojo/promise/all",
+                "aps/Container",
+                "dojox/mvc/at",
+                "aps/Switch",
+                "aps/Button",
+                "aps/CheckBox",
+                "aps/WizardData",
+                "mamasu/mamadojo.js",
+                "aps/ResourceStore",
+                "dojo/when",
+                "aps/ProgressBar",
+                "aps/ready!"
+                
+            ],function (load, registry, Deferred, all, Container, at, Switch, Button, CheckBox, WizardData, mdojo, Store, when) {
+                "use strict";
+                
+                
+                var store = new Store({
+                    target: "/aps/2/resources/"
+                });
+
+                
+                when(store.get(aps.context.vars.tenant.aps.id), function(tenant) {
+                    when(store.get(tenant.dc.aps.id), function(dc) {
+                    	
+                    	function getMap(limit){
+                    		
+                            var map = [];
+                            
+                            var warning = limit * 0.70;
+                            var dangerous = limit * 0.90;
+                            
+                            map[warning] = "warn";
+                            map[dangerous] = "over";
+                			
+                            return map;
+                		}
+                    	
+                    
+                    	console.log(tenant);
+                    	
+                    	if(tenant.cpu_counter.limit == -1 && tenant.memory_counter.limit == -1 &&
+                    			tenant.disk_size_counter.limit == -1 && tenant.traffic_out_counter.limit == -1 &&
+                    			tenant.ips_counter.limit == -1){
+                    		//PAYG
+                    		var cpu_usage = (tenant.cpu_usage.usage != null)? tenant.cpu_usage.usage:0;
+                    		
+                    		var memory_usage = (tenant.memory_usage.usage != null)? tenant.memory_usage.usage: 0;
+                    		
+                    		var disk_size_usage = (tenant.disk_size_usage.usage != null)? tenant.disk_size_usage.usage: 0;
+                    		
+                    		var traffic_out_usage = (tenant.traffic_out_usage.usage != null)? tenant.traffic_out_usage.usage: 0;
+                    		
+                    		var ips_usage = (tenant.ips_usage.usage != null)? tenant.ips_usage.usage: 0;
+                    		
+                    		var cpu_lim = -1;
+                    		var memory_lim = -1;
+                    		var disk_size_lim = -1;
+                    		var traffic_out_lim = -1;
+                    		var ips_lim = -1;
+
+                    		var cpu_label = cpu_usage + " unit used of unlimited units";
+                    		var memory_label = memory_usage + " MB used of unlimited MB"
+                    		var disk_label = disk_size_usage + " GB used of unlimited GB";
+                    		var traffic_label = traffic_out_usage + " KB used of unlimited KB";
+                    		var ips_label = ips_usage + " unit of unlimited units";
+                    		
+                    	}else{
+                    		//FLAT
+                    		var cpu_usage = (tenant.cpu_counter.usage != null)? tenant.cpu_counter.usage: 0;
+                    		var memory_usage = (tenant.memory_counter.usage != null)? tenant.memory_counter.usage: 0;
+                    		var disk_size_usage = (tenant.disk_size_counter.usage != null)? tenant.disk_size_counter.usage: 0;
+                    		var traffic_out_usage = (tenant.traffic_out_counter.usage != null)? tenant.traffic_out_counter.usage: 0;
+                    		var ips_usage = (tenant.ips_counter.usage != null)? tenant.ips_counter.usage: 0;
+                    		
+                    		var cpu_lim = tenant.cpu_counter.limit;
+                    		var memory_lim = tenant.memory_counter.limit;
+                    		var disk_size_lim = tenant.disk_size_counter.limit;
+                    		var traffic_out_lim = tenant.traffic_out_counter.limit;
+                    		var ips_lim = tenant.ips_counter.limit;
+                    		
+                    		
+                    		
+                    		var cpu_label = cpu_usage + " unit used of " + cpu_lim + " units";
+                    		var memory_label = memory_usage + " MB used of " + memory_lim + " MB"
+                    		var disk_label = disk_size_usage + " GB used of " + disk_size_lim + " GB";
+                    		var traffic_label = traffic_out_usage + " KB used of " + traffic_out_lim + " KB";
+                    		var ips_label = ips_usage + " unit of " + ips_lim + " units";
+                    		
+                    		console.log(cpu_label);
+                    		console.log(memory_label);
+                    		console.log(disk_label);
+                    		console.log(traffic_label);
+                    		console.log(ips_label);
+                    		
+                    	}
+                    	
+
+                        dc.apiurl+=':9080/dashboard/auth/login/';
+                    	
+                    	
+                        load(["aps/PageContainer", {id: 'main_page'}, [
+                        ["aps/FieldSet", {
+                        	title: "Profile Details: "
+                        },
+                        [
+	                        ["aps/Output",{ label: "Project Name", content: tenant.name }],
+	                        ["aps/Output",{ label: "Email", content: tenant.name }]
+                        ]],
+                        ["<br>"], ["<br>"],
+                        ["aps/FieldSet", { title: "Credentials: " },
+	                        [
+		                        ["aps/Output",{ label: "Api url", content: "<a href='"+dc.apiurl+"' target='_blank'>"+dc.apiurl+"</a>" }],
+		                        ["aps/Output",{ label: "Login", content: tenant.username }],
+		                        ["aps/Password", { label: "Password", disabled: true, showStrengthIndicator: false, showResetButton: false, value: tenant.password }]
+	                        ]
+                        ],
+                        ["<br>"],["<br>"],
+                        ["aps/FieldSet", { title: "Counters: " },[
+	                        ["aps/Gauge", {
+	                        	label:"CPU Usage", legend: cpu_label, minimum:0, maximum:   cpu_lim,
+	                            value:      cpu_usage, classesMap: getMap(cpu_usage)
+	                        }],
+	                        ["aps/Gauge", {
+	                        	label:"Memory Usage", legend: memory_label,
+	                            minimum:    0, maximum:    memory_lim,
+	                            value:      memory_usage, classesMap: getMap(memory_usage)
+	                        }],
+	                        ["aps/Gauge", {
+	                        	label:"Disk Size Usage", legend: disk_label,
+	                            minimum:    0, maximum:    disk_size_lim,
+	                            value:      disk_size_usage, classesMap: getMap(disk_size_usage)
+	                        }],
+	                        ["aps/Gauge", {
+	                        	label:"Traffic out Usage", legend: traffic_label,
+	                            minimum:    0, maximum:    traffic_out_lim,
+	                            value:      traffic_out_usage, classesMap: getMap(traffic_out_usage)
+	                        }],
+	                        ["aps/Gauge", {
+	                        	label:"IPs Usage", legend: ips_label,
+	                            minimum:    0, maximum:    ips_lim,
+	                            value:      ips_usage, classesMap: getMap(ips_usage)
+	                        }]
+                        ]],
+                        
+                        
+                        
+                    ]]);
+                });
+            });  
+        });
+    </script>
+    </head>
+    <body>
+    </body>
+</html>
