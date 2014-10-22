@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="ASCII"?>
+<aps:APSPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:aps="http://aps-standard.org/ns/2">
+  <internalTypes id="http://openstack.parallels.com/app" version="1.4" relations="//@relations.0/@target //@relations.12/@target" application="true" name="app">
+    <implements>http://aps-standard.org/types/core/application/1.0</implements>
+    <operations name="dcConnectionTest" verb="GET"/>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/organization" version="1.0" relations="//@relations.12/@source //@relations.1/@target //@relations.9/@target //@relations.13/@source //@relations.14/@source //@relations.15/@source" name="organization">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/dc" version="1.7" relations="//@relations.0/@source //@relations.1/@source //@relations.2/@source //@relations.3/@source //@relations.4/@source" name="dc">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+    <properties name="apiurl" type="string"/>
+    <properties name="name" type="string"/>
+    <properties name="user" type="string"/>
+    <properties name="password" type="string"/>
+    <properties name="proxy" type="string"/>
+    <properties name="numorganizations" type="integer"/>
+    <properties name="numprofiles" type="integer"/>
+    <properties name="numimages" type="integer"/>
+    <properties name="numippools" type="integer"/>
+    <operations name="onDCavailable" verb="POST"/>
+    <operations name="updateDatacenter" verb="GET"/>
+    <operations name="listImages" verb="GET"/>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/profile" version="1.0" relations="//@relations.2/@target //@relations.8/@source" name="profile">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/image" version="1.4" relations="//@relations.3/@target //@relations.7/@source" name="image">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+    <properties name="id" type="string"/>
+    <properties name="name" type="string"/>
+    <properties name="os" type="string"/>
+    <properties name="image" type="string"/>
+    <properties name="usage" type="string"/>
+    <properties name="isostatus" type="string"/>
+    <properties name="status" type="string"/>
+    <operations name="updateImage" verb="PUT"/>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/ippool" version="1.2" relations="//@relations.5/@target //@relations.4/@target //@relations.11/@source //@relations.16/@target" name="ippool">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+    <properties name="id" type="string"/>
+    <properties name="name" type="string"/>
+    <properties name="cidr" type="string"/>
+    <properties name="allocation_pools" type="array"/>
+    <properties name="gateway_ip" type="string"/>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/ipassigned" version="1.0" relations="//@relations.5/@source //@relations.6/@source //@relations.10/@target //@relations.18/@target" name="ipassigned">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/ipprovider" version="1.0" relations="//@relations.16/@source //@relations.17/@source" name="ip">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/heatstack" version="1.0" relations="//@relations.9/@source //@relations.8/@target //@relations.10/@source" name="heatstack">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+  </internalTypes>
+  <internalTypes id="http://openstack.parallels.com/unmanagedve" version="1.0" relations="//@relations.13/@target //@relations.7/@target //@relations.18/@source" name="unmanagedve">
+    <implements>http://aps-standard.org/types/core/resource/1.0</implements>
+  </internalTypes>
+  <externalTypes id="http://openstack.parallels.com/ip" version="" relations="//@relations.6/@target //@relations.11/@target //@relations.17/@target"/>
+  <externalTypes id="http://aps-standard.org/types/core/subscription" version="1.0" relations="//@relations.14/@target"/>
+  <externalTypes id="http://aps-standard.org/types/core/account" version="1.0" relations="//@relations.15/@target"/>
+  <relations>
+    <source type="//@internalTypes.2" name="app" required="true"/>
+    <target type="//@internalTypes.0" name="dc" collection="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.2" name="organization" collection="true"/>
+    <target type="//@internalTypes.1" name="dc" required="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.2" name="profile" collection="true"/>
+    <target type="//@internalTypes.3" name="dc" required="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.2" name="image" collection="true"/>
+    <target type="//@internalTypes.4" name="dc" required="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.2" name="ippool" collection="true"/>
+    <target type="//@internalTypes.5" name="dc" required="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.6" name="ippool" required="true"/>
+    <target type="//@internalTypes.5"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.6" name="ip"/>
+    <target type="//@externalTypes.0"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.4" name="unmanagedve" collection="true"/>
+    <target type="//@internalTypes.9" name="image" required="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.3" name="heatstack" collection="true"/>
+    <target type="//@internalTypes.8" name="profile" required="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.8" name="organization" required="true"/>
+    <target type="//@internalTypes.1" name="heatstack" collection="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.8" name="ipassigned" collection="true"/>
+    <target type="//@internalTypes.6"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.5" name="ip" collection="true"/>
+    <target type="//@externalTypes.0"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.1" name="app" required="true"/>
+    <target type="//@internalTypes.0" name="organization" collection="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.1" name="unmanagedve" collection="true"/>
+    <target type="//@internalTypes.9" name="organization" required="true"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.1" name="subscription" required="true"/>
+    <target type="//@externalTypes.1"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.1" name="account" required="true"/>
+    <target type="//@externalTypes.2"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.7" name="ippool" required="true"/>
+    <target type="//@internalTypes.5"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.7" name="ip"/>
+    <target type="//@externalTypes.0"/>
+  </relations>
+  <relations>
+    <source type="//@internalTypes.9" name="ipassigned" collection="true"/>
+    <target type="//@internalTypes.6"/>
+  </relations>
+</aps:APSPackage>

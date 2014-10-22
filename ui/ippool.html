@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+        <script type="text/javascript" src="/aps/2/ui/runtime/client/aps/aps.js"></script>
+        <script>require([
+                "aps/load",
+                "aps/ResourceStore",
+                "dijit/registry",
+                "dojox/mvc/at",
+                "dojox/mvc/getStateful",
+                "dojox/mvc/getPlainValue",
+                "aps/WizardData",
+                "aps/Button",
+                "mamasu/mamadojo.js",
+                "aps/ready!"
+            ], function (load, ResourceStore, registry, at, getStateful, getPlainValue, WizardData, Button, mdojo) {
+                "use strict";
+
+                var data = WizardData.get();
+                var dc = getStateful(data.dc);
+
+                var ippools = new ResourceStore({
+                    target: "/aps/2/resources/" + dc.aps.id + "/ippool?eq(os_status,enabled)"
+                });
+                
+                mdojo.ECRUD.get(dc.aps.id+"/updatedatacenter").then(function(){
+                    registry.byId('gridId').refresh();
+                });
+
+                var view = ["aps/PageContainer", [
+                        ["<h1>", {innerHTML: dc.name}],
+                        ["<div>", {
+                                class: "tabs"
+                            }, [
+                                ["<div>", {
+                                        class: "tabs-area"
+                                    }, [
+                                        ["<ul>", [
+                                                ["<li>", {id: "first-tab"}, [
+                                                        ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                    aps.apsc.gotoView('datacenter-view');
+                                                                }}, [
+                                                                ["<span>", {innerHTML: _("Settings")}]
+                                                            ]]
+                                                    ]],
+                                                ["<li>", {class: "active"}, [
+                                                        ["<a>", {style: "cursor:default;", href: "javascript:void(0);"}, [
+                                                                ["<span>", {innerHTML: _("Ippools")}]
+                                                            ]]
+                                                    ]],
+                                                ["<li>", {}, [
+                                                        ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                    aps.apsc.gotoView('iso');
+                                                                }}, [
+                                                                ["<span>", {innerHTML: _("ISO")}]
+                                                            ]]
+                                                    ]],
+                                                    ["<li>", {}, [
+                                                                  ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                              aps.apsc.gotoView('statistics');
+                                                                          }}, [
+                                                                          ["<span>", {innerHTML: _("Statistics")}]
+                                                                      ]]
+                                                              ]],
+                                                              ["<li>", {id: "last-tab"}, [
+                                                                                          ["<a>", {href: "javascript:void(0);", onclick: function () {
+                                                                                                      aps.apsc.gotoView('synchronize');
+                                                                                                  }}, [
+                                                                                                  ["<span>", {innerHTML: _("Synchronize")}]
+                                                                                              ]]
+                                                                                      ]]
+                                            ]]
+                                    ]]
+                            ]],
+                        ["aps/Container", {
+                                title: "Ippool List"
+                            }, [["aps/Grid", {
+                                        store: ippools,
+                                        id: "gridId",
+                                        columns: [
+                                            {name: "Ippool", field: "name"},
+                                            {name: "IP", field: "cidr"},
+                                            {name: "Actions", renderCell: function (row, data) {
+                                                    return new Button({
+                                                        label: 'IP List',
+                                                        onClick: function () {
+                                                            this.cancel();
+                                                            var data = WizardData.get();
+                                                            data.subnet = row.aps.id;
+                                                            WizardData.put(data);
+                                                            aps.apsc.gotoView('ip-list');
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        ]
+                                    }]
+                            ]],
+                        ['aps/Button', {
+                                title: _("Back to data centers"),
+                                onClick: function () {
+                                    aps.apsc.gotoView('datacenters');
+                                }
+                            }]
+                    ]];
+                load(view).then(function () {
+//                    ippools.query("network").then(function (data) {
+//                        mdojo.Widgets.ObjectInspector(data, "inspector2");
+//                    });
+//                    ippools.query().then(function (data) {
+//                        mdojo.Widgets.ObjectInspector(data, "inspector1");
+//                    });
+                });
+            });</script>
+    </head>
+    <body>
+    </body>
+</html>

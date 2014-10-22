@@ -1,0 +1,138 @@
+<application packaged="2014-09-15T13:20:06" version="2.0" xmlns="http://aps-standard.org/ns/2">
+    <id>http://openstack.parallels.trn</id>
+    <name>Openstack</name>
+    <version>1.0</version>
+    <release>22</release>
+    <homepage>http://dev.apsstandard.org/doc/poa/pa-sample-integration/starter.html</homepage>
+    <vendor>
+    	<name>OpenStack</name>
+    	<homepage>https://www.openstack.org</homepage>
+    	<icon path="images/logo-openstack.png" />
+    </vendor>
+    <packager> 
+    	<name>The Mamasú Agency</name>
+    	<homepage>http://www.mamasu.es/</homepage>
+    	<icon path="images/logo-mamasu.png" />
+    </packager>
+    <presentation>
+    	<summary>Simplest starter multi-tenant application for OpenStack</summary>
+    	<description>OpenStack is a global collaboration of developers and cloud computing technologists producing the ubiquitous open source cloud computing platform for public and private clouds.</description>
+    	<icon path="images/logo-openstack.png"/>
+        <categories>
+           <category>Infrastructure/Management</category>
+        </categories>
+        <navigation id="pcp" label="OpenStack">
+            <var name="application" type-id="http://openstack.parallels.com/app"/>
+            <plugs-to id="http://www.aps-standard.org/ui/application"/>
+            <item id="dc-list" label="Data Centers">
+                <view id="datacenters" label="Data Centers"></view>
+                <view id="datacenter-new" label="Globals Settings"></view>
+                <view id="datacenter-edit" label="Globals Settings"></view>
+                <view id="datacenter-view" label="Globals Settings"></view>
+                <view id="ippool" label="Globals Settings"></view>
+             	<view id="ip-list" label="Globals Settings"></view>
+            	<view id="iso" label="Globals Settings"></view>
+            	<view id="iso-new" label="Globals Settings"></view>
+            	<view id="iso-edit" label="Globals Settings"></view>
+            	<view id="profiles" label="Globals Settings"></view>
+            	<view id="statistics" label="Statistics"></view>
+            </item>
+        </navigation>
+        <navigation id="ccp" label="OpenStack">
+            <var name="tenant" type-id="http://openstack.parallels.com/organization"/>
+            <plugs-to id="http://www.aps-standard.org/ui/service"/>
+            <item id="tenant" label="OpenStack">
+                <view id="tenant" label="OpenStack Organization"></view>
+            </item>
+        </navigation>
+    </presentation>
+    <license-agreement must-accept="true">
+    <free/>
+    <text>
+        <name>End-User License Agreement</name>
+        <file>http://opensource.org/licenses/bsd-license</file>
+    </text>
+    </license-agreement>
+    <upgrade match="version=ge=1.0"/>
+    <service id="app">
+        <schema path="schemas/app.schema.gen"/>
+		<code engine="php" path="scripts/app.php"/>
+        <presentation> 
+            <name>OpenStack Application</name>
+            <summary>OpenStack application global service</summary>
+        </presentation>
+    </service>
+    <service id="organization">
+        <schema path="schemas/organization.schema.gen"/>
+		<code engine="php" path="scripts/organization.php"/>
+        <presentation>
+            <name>OpenStack Organization</name>
+            <summary>OpenStack organization environment</summary>
+        </presentation>
+    </service>
+    
+    <service id="dc">
+        <schema path="schemas/dc.schema.gen"/>
+		<code engine="php" path="scripts/dc.php"/>
+        <presentation>
+            <name>OpenStack DC</name>
+            <summary>OpenStack DC</summary>
+        </presentation>
+    </service>
+    <service id="profile">
+        <schema path="schemas/profile.schema.gen"/>
+		<code engine="php" path="scripts/profile.php"/>
+        <presentation>
+            <name>OpenStack Profile</name>
+            <summary>OpenStack Profile</summary>
+        </presentation>
+    </service>
+    <service id="image">
+        <schema path="schemas/image.schema.gen"/>
+		<code engine="php" path="scripts/image.php"/>
+        <presentation>
+            <name>OpenStack Image</name>
+            <summary>OpenStack Image</summary>
+        </presentation>
+    </service>
+    <service id="ippools">
+        <schema path="schemas/ippool.schema.gen"/>
+		<code engine="php" path="scripts/ippool.php"/>
+        <presentation>
+            <name>OpenStack IP Pool</name>
+            <summary>OpenStack IP Pool</summary>
+        </presentation>
+    </service>
+    <service id="ipassigned">
+        <schema path="schemas/ipassigned.schema.gen"/>
+		<code engine="php" path="scripts/ipassigned.php"/>
+        <presentation>
+            <name>OpenStack IP Assigned</name>
+            <summary>OpenStack IP Assigned</summary>
+        </presentation>
+    </service>
+    <service id="ip">
+        <schema path="schemas/ip.schema.gen"/>
+		<code engine="php" path="scripts/ip.php"/>
+        <presentation>
+            <name>OpenStack IP</name>
+            <summary>OpenStack IP</summary>
+        </presentation>
+    </service>
+    <service id="heatstack">
+        <schema path="schemas/heatstack.schema.gen"/>
+		<code engine="php" path="scripts/heatstack.php"/>
+        <presentation>
+            <name>OpenStack Heat Stack</name>
+            <summary>OpenStack Heat Stack</summary>
+        </presentation>
+    </service>
+    <service id="unmanagedve">
+        <schema path="schemas/unmanagedve.schema.gen"/>
+		<code engine="php" path="scripts/unmanagedve.php"/>
+        <presentation>
+            <name>OpenStack Unmanaged Ve</name>
+            <summary>OpenStack Unmanaged Ve</summary>
+        </presentation>
+    </service>
+</application>
